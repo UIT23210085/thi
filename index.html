@@ -1,954 +1,1914 @@
-import React, { useState } from 'react';
-import { BookOpen, Users, Briefcase, Award, Building2, Calendar, Shield, AlertTriangle, CheckCircle, Percent, FileText,
-Scale, Wallet, FilePlus, Clock } from 'lucide-react';
+<!DOCTYPE html>
+<html lang="vi">
 
-const ReviewInfographic = () => {
-const [activeTab, setActiveTab] = useState('labor');
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đề Cương Tổng Hợp Kiến Thức Ôn Tập</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
 
-const tabs = [
-{ id: 'labor', label: 'Bộ Luật Lao Động', icon:
-<Briefcase size={20} /> },
-{ id: 'official', label: 'Viên Chức (NĐ 115)', icon:
-<Users size={20} /> },
-{ id: 'medical', label: 'Y Tế & VTVL', icon:
-<Building2 size={20} /> },
-{ id: 'admin', label: 'Văn bản Hành chính', icon:
-<FileText size={20} /> },
-{ id: 'reward', label: 'Thi Đua Khen Thưởng', icon:
-<Award size={20} /> },
-{ id: 'hospital', label: 'BV Nhi Đồng TP', icon:
-<Shield size={20} /> },
-];
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-return (
-<div className="min-h-screen bg-slate-50 font-sans text-slate-800 p-4 md:p-8">
-    {/* Header */}
-    <div className="max-w-6xl mx-auto mb-8 text-center">
-        <h1 className="text-3xl md:text-4xl font-extrabold text-blue-900 mb-2">
-            ĐỀ CƯƠNG TỔNG HỢP KIẾN THỨC ÔN TẬP
-        </h1>
-        <p className="text-blue-600 font-medium text-lg">Hệ thống hóa chi tiết kiến thức pháp luật và chuyên ngành y tế
-        </p>
-    </div>
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
 
-    {/* Navigation */}
-    <div className="max-w-6xl mx-auto mb-8 sticky top-0 z-50">
-        <div
-            className="flex flex-wrap justify-center gap-2 md:gap-4 bg-white p-3 rounded-xl shadow-lg border border-slate-200">
-            {tabs.map((tab) => (
-            <button key={tab.id} onClick={()=> setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-3 rounded-lg transition-all duration-200 font-bold text-sm
-                md:text-base ${activeTab === tab.id
-                ? 'bg-blue-700 text-white shadow-md transform scale-105'
-                : 'bg-slate-50 text-slate-600 hover:bg-blue-50 hover:text-blue-700'
-                }`}
-                >
-                {tab.icon}
-                <span className="hidden md:inline">{tab.label}</span>
-            </button>
-            ))}
-        </div>
-    </div>
+        .tab-btn.active {
+            background-color: #1d4ed8;
+            /* blue-700 */
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
 
-    {/* Content Area */}
-    <div className="max-w-6xl mx-auto">
-        <div className="bg-white rounded-2xl shadow-xl min-h-[500px] p-1">
-            {activeTab === 'labor' &&
-            <LaborLawSection />}
-            {activeTab === 'official' &&
-            <OfficialSection />}
-            {activeTab === 'medical' &&
-            <MedicalSection />}
-            {activeTab === 'admin' &&
-            <AdminSection />}
-            {activeTab === 'reward' &&
-            <RewardSection />}
-            {activeTab === 'hospital' &&
-            <HospitalSection />}
-        </div>
-    </div>
-
-    <div className="text-center mt-12 text-slate-500 text-sm pb-8">
-        Nội dung được tổng hợp đầy đủ từ đề cương ôn tập.
-    </div>
-</div>
-);
-};
-
-// --- Shared Components ---
-
-const SectionContainer = ({ children, className = "" }) => (
-<div className={`p-4 md:p-8 animate-fade-in ${className}`}>
-    {children}
-</div>
-);
-
-const MainTitle = ({ title, sub }) => (
-<div className="mb-8 border-b pb-4">
-    <h2 className="text-2xl md:text-3xl font-extrabold text-blue-900 uppercase tracking-tight">{title}</h2>
-    {sub && <p className="text-slate-500 mt-2 text-lg">{sub}</p>}
-</div>
-);
-
-const SubHeading = ({ title, icon }) => (
-<h3 className="flex items-center gap-2 text-xl font-bold text-slate-800 mt-8 mb-4 border-l-4 border-blue-600 pl-3">
-    {icon && <span className="text-blue-600">{icon}</span>}
-    {title}
-</h3>
-);
-
-const Card = ({ title, children, color = "blue", className = "" }) => {
-const borderColors = {
-blue: "border-t-blue-600",
-green: "border-t-green-600",
-red: "border-t-red-600",
-purple: "border-t-purple-600",
-orange: "border-t-orange-600",
-slate: "border-t-slate-600",
-};
-
-return (
-<div className={`bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 ${borderColors[color]}
-    ${className}`}>
-    {title && <h4 className={`font-bold text-lg mb-3 text-${color==='slate' ? 'slate-800' : color + '-700' }`}>{title}
-    </h4>}
-    <div className="text-slate-700 text-sm leading-relaxed">{children}</div>
-</div>
-);
-};
-
-const ListBox = ({ items, type = "disc" }) => (
-<ul className={`space-y-2 ml-4 ${type==='decimal' ? 'list-decimal' : 'list-disc' } marker:text-blue-500`}>
-    {items.map((item, idx) => (
-    <li key={idx} className="pl-1">{item}</li>
-    ))}
-</ul>
-);
-
-const HighlightBox = ({ title, children, color = "yellow" }) => {
-const styles = {
-yellow: "bg-yellow-50 text-yellow-900 border-yellow-200",
-red: "bg-red-50 text-red-900 border-red-200",
-blue: "bg-blue-50 text-blue-900 border-blue-200",
-};
-return (
-<div className={`p-4 rounded-lg border ${styles[color]} mb-4`}>
-    {title && <div className="font-bold mb-2 flex items-center gap-2">{title}</div>}
-    <div className="text-sm">{children}</div>
-</div>
-);
-};
-
-// --- SECTIONS ---
-
-const LaborLawSection = () => {
-return (
-<SectionContainer>
-    <MainTitle title="Phần I: Kiến thức về Bộ Luật Lao Động" sub="Số 45/2019/QH14" />
-
-    {/* 1. Phạm vi & Hiệu lực */}
-    <SubHeading title="1. Phạm vi điều chỉnh và Hiệu lực thi hành" icon={<BookOpen size={24} />} />
-    <div className="grid md:grid-cols-2 gap-4">
-        <Card title="Phạm vi điều chỉnh" color="blue">
-            <ListBox items={[ "Quy định tiêu chuẩn lao động." , "Quyền, nghĩa vụ, trách nhiệm của người lao động."
-                , "Quyền, nghĩa vụ, trách nhiệm của người sử dụng lao động."
-                , "Quyền, nghĩa vụ, trách nhiệm của tổ chức đại diện người lao động tại cơ sở, tổ chức đại diện người sử dụng lao động trong quan hệ lao động và các quan hệ khác liên quan trực tiếp đến quan hệ lao động."
-                , "Quản lý nhà nước về lao động." ]} />
-        </Card>
-        <Card title="Hiệu lực thi hành" color="green">
-            <div className="flex items-center justify-center h-full">
-                <div className="text-center">
-                    <p className="text-slate-500 mb-2">Ngày có hiệu lực</p>
-                    <p className="text-3xl font-bold text-green-700">01/01/2021</p>
-                </div>
-            </div>
-        </Card>
-    </div>
-
-    {/* 2. Tuổi nghỉ hưu */}
-    <SubHeading title="2. Tuổi nghỉ hưu (Lộ trình đến năm 2026)" icon={<Calendar size={24} />} />
-    <div className="flex gap-6 justify-center bg-slate-50 p-6 rounded-xl border border-slate-200">
-        <div className="text-center bg-white p-4 rounded-lg shadow-sm w-48">
-            <div className="text-blue-600 font-bold text-lg mb-1">NAM</div>
-            <div className="text-4xl font-extrabold text-slate-800">61</div>
-            <div className="text-sm text-slate-500 font-medium">tuổi 6 tháng</div>
-        </div>
-        <div className="text-center bg-white p-4 rounded-lg shadow-sm w-48">
-            <div className="text-pink-600 font-bold text-lg mb-1">NỮ</div>
-            <div className="text-4xl font-extrabold text-slate-800">57</div>
-            <div className="text-sm text-slate-500 font-medium">tuổi</div>
-        </div>
-    </div>
-
-    {/* 3. Quyền & Nghĩa vụ */}
-    <SubHeading title="3. Quyền và Nghĩa vụ của các bên" icon={<Scale size={24} />} />
-    <div className="grid md:grid-cols-2 gap-6">
-        <Card title="Quyền của Người lao động" color="blue">
-            <ListBox type="decimal"
-                items={[ "Làm việc; tự do lựa chọn việc làm, nơi làm việc, nghề nghiệp, học nghề, nâng cao trình độ nghề nghiệp; không bị phân biệt đối xử, cưỡng bức lao động, quấy rối tình dục tại nơi làm việc."
-                , "Hưởng lương phù hợp với trình độ, kỹ năng nghề trên cơ sở thỏa thuận; được bảo hộ lao động, làm việc trong điều kiện bảo đảm an toàn, vệ sinh; nghỉ theo chế độ, nghỉ hằng năm có hưởng lương và phúc lợi tập thể."
-                , "Thành lập, gia nhập, hoạt động trong tổ chức đại diện NLĐ, tổ chức nghề nghiệp; yêu cầu và tham gia đối thoại, quy chế dân chủ, thương lượng tập thể, được tham vấn; tham gia quản lý theo nội quy."
-                , "Từ chối làm việc nếu có nguy cơ rõ ràng đe dọa trực tiếp đến tính mạng, sức khỏe trong quá trình thực hiện công việc."
-                , "Đơn phương chấm dứt hợp đồng lao động." , "Đình công."
-                , "Các quyền khác theo quy định của pháp luật." ]} />
-        </Card>
-        <Card title="Quyền của Người sử dụng lao động" color="purple">
-            <ListBox type="decimal"
-                items={[ "Tuyển dụng, bố trí, quản lý, điều hành, giám sát lao động; khen thưởng và xử lý vi phạm kỷ luật lao động."
-                , "Thành lập, gia nhập, hoạt động trong tổ chức đại diện NSDLĐ, tổ chức nghề nghiệp và tổ chức khác."
-                , "Yêu cầu tổ chức đại diện NLĐ thương lượng với mục đích ký kết thỏa ước lao động tập thể."
-                , "Tham gia giải quyết tranh chấp lao động, đình công."
-                , "Đối thoại, trao đổi với tổ chức đại diện NLĐ về các vấn đề trong quan hệ lao động, cải thiện đời sống vật chất và tinh thần của NLĐ."
-                , "Đóng cửa tạm thời nơi làm việc." , "Các quyền khác theo quy định của pháp luật." ]} />
-        </Card>
-    </div>
-
-    {/* 4. Nghiêm cấm */}
-    <SubHeading title="4. Các hành vi bị nghiêm cấm" icon={<AlertTriangle size={24} />} />
-    <HighlightBox color="red" title={<>
-        <AlertTriangle size={18} /> 7 Hành vi bị nghiêm cấm</>}>
-        <ListBox type="decimal" items={[ "Phân biệt đối xử trong lao động."
-            , "Ngược đãi người lao động, cưỡng bức lao động." , "Quấy rối tình dục tại nơi làm việc."
-            , "Lợi dụng danh nghĩa dạy nghề, tập nghề để trục lợi, bóc lột sức lao động hoặc lôi kéo, dụ dỗ, ép buộc người học nghề, người tập nghề vào hoạt động trái pháp luật."
-            , "Sử dụng lao động chưa qua đào tạo hoặc chưa có chứng chỉ kỹ năng nghề quốc gia đối với nghề, công việc phải sử dụng lao động đã được đào tạo hoặc phải có chứng chỉ."
-            , "Lôi kéo, dụ dỗ, hứa hẹn, quảng cáo gian dối hoặc thủ đoạn khác để lừa gạt NLĐ hoặc để tuyển dụng NLĐ với mục đích mua bán người, bóc lột, cưỡng bức lao động hoặc lợi dụng dịch vụ việc làm, hoạt động đưa NLĐ đi làm việc ở nước ngoài theo HĐ để thực hiện hành vi trái pháp luật."
-            , "Sử dụng lao động chưa thành niên trái pháp luật." ]} />
-    </HighlightBox>
-
-    {/* 5. Hợp đồng lao động */}
-    <SubHeading title="5. Hợp đồng lao động" icon={<FileText size={24} />} />
-    <div className="space-y-6">
-        <div className="grid md:grid-cols-2 gap-4">
-            <Card title="Nguyên tắc giao kết" color="blue">
-                <ListBox items={["Tự nguyện.", "Bình đẳng." , "Thiện chí." , "Hợp tác." , "Trung thực."
-                    , "Tự do giao kết nhưng không trái pháp luật, thỏa ước LĐTT và đạo đức xã hội." ]} />
-            </Card>
-            <Card title="Tạm hoãn thực hiện HĐLĐ" color="orange">
-                <ListBox items={[ "NLĐ thực hiện nghĩa vụ quân sự, nghĩa vụ tham gia Dân quân tự vệ."
-                    , "NLĐ bị tạm giữ, tạm giam theo quy định tố tụng hình sự."
-                    , "NLĐ phải chấp hành quyết định áp dụng biện pháp đưa vào trường giáo dưỡng, cơ sở cai nghiện/giáo dục bắt buộc."
-                    , "Lao động nữ mang thai theo quy định tại Điều 138."
-                    , "Được bổ nhiệm làm quản lý doanh nghiệp (công ty TNHH MTV Nhà nước nắm 100% vốn)."
-                    , "Được ủy quyền đại diện phần vốn nhà nước/doanh nghiệp tại doanh nghiệp khác."
-                    , "Trường hợp khác do hai bên thỏa thuận." ]} />
-            </Card>
+<body class="bg-slate-50 font-sans text-slate-800">
+    <div class="min-h-screen p-4 md:p-8">
+        <!-- Header -->
+        <div class="max-w-6xl mx-auto mb-8 text-center">
+            <h1 class="text-3xl md:text-4xl font-extrabold text-blue-900 mb-2">
+                ĐỀ CƯƠNG TỔNG HỢP KIẾN THỨC ÔN TẬP
+            </h1>
+            <p className="text-blue-600 font-medium text-lg">Hệ thống hóa chi tiết kiến thức pháp luật và chuyên ngành y
+                tế</p>
         </div>
 
-        <Card title="Nội dung chủ yếu của HĐLĐ" color="slate">
-            <div className="grid md:grid-cols-2 gap-4 text-sm">
-                <ListBox items={[ "Tên, địa chỉ NSDLĐ và họ tên, chức danh người đại diện."
-                    , "Họ tên, ngày sinh, giới tính, nơi cư trú, số CCCD/CMND/Hộ chiếu người lao động."
-                    , "Công việc và địa điểm làm việc; Thời hạn hợp đồng."
-                    , "Mức lương, hình thức trả, thời hạn trả, phụ cấp và các khoản bổ sung." ]} />
-                <ListBox items={[ "Chế độ nâng bậc, nâng lương; Thời giờ làm việc, nghỉ ngơi."
-                    , "Trang bị bảo hộ lao động." , "BHXH, BHYT, BHTN."
-                    , "Đào tạo, bồi dưỡng, nâng cao trình độ, kỹ năng nghề." ]} />
-            </div>
-        </Card>
-
-        <Card title="Chấm dứt Hợp đồng lao động" color="red">
-            <h5 className="font-bold text-slate-800 mb-2">Các trường hợp chấm dứt:</h5>
-            <ListBox items={[ "Hết hạn HĐLĐ (trừ trường hợp quy định)."
-                , "Đã hoàn thành công việc; Thỏa thuận chấm dứt."
-                , "NLĐ bị kết án tù (không hưởng án treo/không được trả tự do), tử hình, cấm làm công việc ghi trong HĐ."
-                , "NLĐ chết; bị Tòa án tuyên bố mất năng lực hành vi, mất tích hoặc đã chết."
-                , "NSDLĐ (cá nhân) chết/mất năng lực/mất tích; NSDLĐ (tổ chức) chấm dứt hoạt động."
-                , "NLĐ bị xử lý kỷ luật sa thải."
-                , "Thử việc không đạt yêu cầu hoặc một bên hủy bỏ thỏa thuận thử việc." ]} />
-        </Card>
-
-        <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
-            <h4 className="text-xl font-bold text-blue-900 mb-4">Quyền đơn phương chấm dứt HĐLĐ của NLĐ</h4>
-            <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                    <h5 className="font-bold text-blue-800 mb-2 border-b border-blue-200 pb-1">Thời hạn báo trước</h5>
-                    <ul className="space-y-3 text-sm">
-                        <li className="flex justify-between items-center bg-white p-2 rounded shadow-sm">
-                            <span>HĐ không xác định thời hạn</span>
-                            <span className="font-bold text-blue-600">Ít nhất 45 ngày</span>
-                        </li>
-                        <li className="flex justify-between items-center bg-white p-2 rounded shadow-sm">
-                            <span>HĐ 12 - 36 tháng</span>
-                            <span className="font-bold text-blue-600">Ít nhất 30 ngày</span>
-                        </li>
-                        <li className="flex justify-between items-center bg-white p-2 rounded shadow-sm">
-                            <span>HĐ dưới 12 tháng</span>
-                            <span className="font-bold text-blue-600">Ít nhất 03 ngày làm việc</span>
-                        </li>
-                        <li className="text-xs text-slate-500 italic">*Ngành nghề đặc thù: theo quy định CP.</li>
-                    </ul>
-                </div>
-                <div>
-                    <h5 className="font-bold text-blue-800 mb-2 border-b border-blue-200 pb-1">Không cần báo trước</h5>
-                    <ListBox items={[ "Không được bố trí đúng công việc, địa điểm hoặc điều kiện làm việc."
-                        , "Không được trả đủ lương hoặc trả không đúng thời hạn."
-                        , "Bị ngược đãi, đánh đập, nhục mạ, ảnh hưởng sức khỏe/nhân phẩm; bị cưỡng bức lao động."
-                        , "Bị quấy rối tình dục tại nơi làm việc."
-                        , "Lao động nữ mang thai phải nghỉ việc theo quy định." , "Đủ tuổi nghỉ hưu."
-                        , "NSDLĐ cung cấp thông tin không trung thực ảnh hưởng đến HĐLĐ." ]} />
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {/* 6. Thời giờ làm việc - Lương */}
-    <SubHeading title="6. Thời giờ làm việc, Nghỉ ngơi & Tiền lương" icon={<Percent size={24} />} />
-    <div className="space-y-4">
-        <div className="grid md:grid-cols-3 gap-4">
-            <Card title="Thời giờ làm việc" color="green">
-                <div className="space-y-2">
-                    <p><span className="font-bold">Bình thường:</span> Max 08h/ngày, 48h/tuần.</p>
-                    <p><span className="font-bold">Ban đêm:</span> 22h00 - 06h00 hôm sau.</p>
-                </div>
-            </Card>
-            <Card title="Nghỉ phép năm" color="green">
-                <ul className="space-y-1">
-                    <li><span className="font-bold text-green-700">12 ngày:</span> Đk bình thường.</li>
-                    <li><span className="font-bold text-green-700">14 ngày:</span> Chưa thành niên, khuyết tật, nặng
-                        nhọc, độc hại.</li>
-                    <li><span className="font-bold text-green-700">16 ngày:</span> Đặc biệt nặng nhọc, độc hại, nguy
-                        hiểm.</li>
-                </ul>
-            </Card>
-            <Card title="Nghỉ Lễ, Tết (11 ngày)" color="green">
-                <ul className="text-sm space-y-1">
-                    <li>Tết Dương lịch: 1</li>
-                    <li>Tết Âm lịch: 5</li>
-                    <li>30/4 & 1/5: 2</li>
-                    <li>Quốc khánh: 2 (2/9 + 1 ngày)</li>
-                    <li>Giỗ Tổ (10/3 âm): 1</li>
-                </ul>
-            </Card>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-4">
-            <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
-                <h4 className="font-bold text-orange-800 mb-3">Nghỉ việc riêng hưởng nguyên lương</h4>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                        <p className="font-bold">Bản thân kết hôn</p>
-                        <p className="text-2xl font-bold text-orange-600">03 ngày</p>
-                    </div>
-                    <div>
-                        <p className="font-bold">Con kết hôn</p>
-                        <p className="text-2xl font-bold text-orange-600">01 ngày</p>
-                    </div>
-                    <div className="col-span-2 border-t border-orange-200 pt-2">
-                        <p className="font-bold">Cha/Mẹ (đẻ/nuôi/vợ/chồng) chết; Vợ/Chồng chết; Con chết</p>
-                        <p className="text-2xl font-bold text-orange-600">03 ngày</p>
-                    </div>
-                </div>
-            </div>
-
-            <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-                <h4 className="font-bold text-yellow-800 mb-3">Tiền lương làm thêm giờ</h4>
-                <ul className="space-y-2 text-sm">
-                    <li className="flex justify-between"><span>Ngày thường</span> <b className="text-yellow-700">≥
-                            150%</b></li>
-                    <li className="flex justify-between"><span>Ngày nghỉ tuần</span> <b className="text-yellow-700">≥
-                            200%</b></li>
-                    <li className="flex justify-between"><span>Lễ, Tết, ngày nghỉ có lương</span> <b
-                            className="text-yellow-700">≥ 300%</b></li>
-                    <li className="border-t border-yellow-200 pt-1 mt-1">
-                        <span className="font-bold">Làm thêm ban đêm:</span> <br />
-                        Ngoài trả lương làm thêm + làm đêm, trả thêm <b className="text-yellow-700">20%</b> tiền lương
-                        ngày bình thường/nghỉ tuần/lễ tết.
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    {/* 7. Nội quy & Kỷ luật */}
-    <SubHeading title="7. Nội quy lao động và Kỷ luật lao động" icon={<Shield size={24} />} />
-    <div className="grid md:grid-cols-2 gap-6">
-        <Card title="Nội dung Nội quy lao động" color="slate">
-            <ListBox type="decimal" items={[ "Thời giờ làm việc, nghỉ ngơi; Trật tự nơi làm việc."
-                , "An toàn, vệ sinh lao động." , "Phòng, chống quấy rối tình dục; quy trình xử lý."
-                , "Bảo vệ tài sản, bí mật kinh doanh/công nghệ, sở hữu trí tuệ."
-                , "Trường hợp tạm thời chuyển NLĐ làm việc khác." , "Các hành vi vi phạm kỷ luật và hình thức xử lý."
-                , "Trách nhiệm vật chất; Người có thẩm quyền xử lý." ]} />
-        </Card>
-        <Card title="Nguyên tắc xử lý kỷ luật" color="red">
-            <ListBox type="decimal" items={[ "NSDLĐ phải chứng minh được lỗi của NLĐ."
-                , "Phải có sự tham gia của tổ chức đại diện NLĐ."
-                , "NLĐ phải có mặt, có quyền tự bào chữa/nhờ bào chữa." , "Phải lập biên bản."
-                , "Không áp dụng nhiều hình thức kỷ luật cho 1 hành vi."
-                , "Nhiều hành vi cùng lúc => chỉ áp dụng hình thức cao nhất."
-                , "Không xử lý: Đang ốm đau/điều dưỡng, nghỉ thai sản, đang bị tạm giữ/tạm giam." ]} />
-        </Card>
-    </div>
-
-    {/* 8. Nguyên tắc trả lương */}
-    <SubHeading title="8. Nguyên tắc trả lương" icon={<Wallet size={24} />} />
-    <div className="grid md:grid-cols-2 gap-6">
-        <Card title="Nguyên tắc chung & Quyền chi tiêu" color="green">
-            <ListBox items={[ "NSDLĐ trả lương trực tiếp, đầy đủ, đúng hạn."
-                , "Nếu NLĐ không thể nhận trực tiếp: Có thể trả cho người được ủy quyền hợp pháp."
-                , "NSDLĐ KHÔNG được hạn chế/can thiệp quyền tự quyết chi tiêu của NLĐ."
-                , "KHÔNG được ép buộc mua hàng hóa/dịch vụ của NSDLĐ hoặc đơn vị chỉ định." ]} />
-        </Card>
-        <Card title="Hình thức trả lương" color="blue">
-            <ListBox items={[ "Thỏa thuận: Theo thời gian, sản phẩm hoặc khoán."
-                , "Phương thức: Tiền mặt hoặc chuyển khoản qua tài khoản ngân hàng."
-                , "Phí: Nếu trả qua thẻ, NSDLĐ phải trả phí mở tài khoản và phí chuyển tiền." ]} />
-        </Card>
-    </div>
-</SectionContainer>
-);
-};
-
-const OfficialSection = () => {
-return (
-<SectionContainer>
-    <MainTitle title="Phần II: Quản lý Viên chức" sub="Nghị định 115/2020/NĐ-CP & 85/2023/NĐ-CP" />
-
-    {/* 1. Hiệu lực */}
-    <div
-        className="bg-indigo-50 p-4 rounded-lg mb-8 border border-indigo-100 flex flex-col md:flex-row gap-4 justify-between items-center">
-        <div>
-            <h4 className="font-bold text-indigo-900">Hiệu lực thi hành</h4>
-            <p className="text-2xl font-bold text-indigo-600">29/09/2020</p>
-        </div>
-        <div className="text-sm text-indigo-800 md:w-1/2">
-            <p><b>Phạm vi:</b> Viên chức tại ĐVSNCL (Nhà nước/Đảng/Đoàn thể). Áp dụng cho cả DN có vốn nhà nước
-                &gt;50%.
-            </p>
-            <p className="mt-1"><b>Bãi bỏ:</b> NĐ 29/2012/NĐ-CP và Điều 2 NĐ 161/2018/NĐ-CP.</p>
-        </div>
-    </div>
-
-    {/* 2. Phân loại */}
-    <SubHeading title="2. Phân loại viên chức" icon={<Users size={24} />} />
-    <div className="grid grid-cols-2 gap-4 mb-6">
-        <Card title="Theo chức trách, nhiệm vụ" color="blue">
-            <ListBox items={["Viên chức quản lý", "Viên chức không giữ chức vụ quản lý" ]} />
-        </Card>
-        <Card title="Theo trình độ đào tạo" color="blue">
-            <ListBox items={["Tiến sĩ", "Thạc sĩ" , "Đại học" , "Cao đẳng" , "Trung cấp" ]} />
-        </Card>
-    </div>
-
-    {/* 3. Tuyển dụng */}
-    <SubHeading title="3. Tuyển dụng viên chức" icon={<Briefcase size={24} />} />
-    <div className="space-y-4">
-        <div className="grid md:grid-cols-2 gap-4">
-            <Card title="Hình thức & Điều kiện" color="green">
-                <p className="mb-2"><b>Hình thức:</b> Thi tuyển & Xét tuyển.</p>
-                <p className="font-bold mb-1">Điều kiện (Điều 22 Luật Viên chức):</p>
-                <ul className="list-disc ml-4 text-sm mb-2">
-                    <li>Được bổ sung điều kiện khác (không thấp hơn chuẩn chung, không trái luật, không phân biệt loại
-                        hình đào tạo).</li>
-                    <li>VH-NT-TTTT: Có thể dưới 18 tuổi (phải từ đủ 15t, có sự đồng ý của người đại diện).</li>
-                </ul>
-            </Card>
-            <Card title="Điểm ưu tiên (Cộng vào vòng 2)" color="purple">
-                <ul className="space-y-3 text-sm">
-                    <li className="flex items-start gap-2">
-                        <span className="bg-purple-100 text-purple-700 font-bold px-2 py-1 rounded">+7.5</span>
-                        <span>Anh hùng LLVT, Anh hùng LĐ, Thương binh (hưởng chính sách như TB), Thương binh loại
-                            B.</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                        <span className="bg-purple-100 text-purple-700 font-bold px-2 py-1 rounded">+5.0</span>
-                        <span>Dân tộc thiểu số, sĩ quan, quân nhân chuyên nghiệp, người làm cơ yếu, con liệt
-                            sĩ/thương/bệnh binh...</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                        <span className="bg-purple-100 text-purple-700 font-bold px-2 py-1 rounded">+2.5</span>
-                        <span>Hoàn thành NVQS, công an, thanh niên xung phong...</span>
-                    </li>
-                </ul>
-                <p className="text-xs text-slate-500 mt-2 italic">*Chỉ cộng điểm ưu tiên cao nhất.</p>
-            </Card>
-        </div>
-    </div>
-
-    {/* 4. Tập sự */}
-    <SubHeading title="4. Chế độ Tập sự" icon={<CheckCircle size={24} />} />
-    <div className="bg-white p-6 rounded-lg shadow-md border border-slate-200">
-        <div className="grid md:grid-cols-3 gap-4 mb-6 text-center">
-            <div className="p-4 bg-blue-50 rounded-lg">
-                <div className="text-2xl font-bold text-blue-700">12 tháng</div>
-                <div className="font-medium text-slate-700">Đại học</div>
-                <div className="text-xs text-blue-600 mt-1">(Bác sĩ: 09 tháng)</div>
-            </div>
-            <div className="p-4 bg-teal-50 rounded-lg">
-                <div className="text-2xl font-bold text-teal-700">09 tháng</div>
-                <div className="font-medium text-slate-700">Cao đẳng</div>
-            </div>
-            <div className="p-4 bg-slate-100 rounded-lg">
-                <div className="text-2xl font-bold text-slate-700">06 tháng</div>
-                <div className="font-medium text-slate-700">Trung cấp</div>
-            </div>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-6">
-            <div>
-                <h5 className="font-bold text-slate-800 mb-2">Chính sách lương tập sự</h5>
-                <ul className="space-y-2 text-sm">
-                    <li className="flex justify-between border-b border-slate-100 pb-1">
-                        <span>Bình thường</span>
-                        <span className="font-bold text-blue-600">85% bậc 1</span>
-                    </li>
-                    <li className="flex justify-between border-b border-slate-100 pb-1">
-                        <span>Thạc sĩ</span>
-                        <span className="font-bold text-blue-600">85% bậc 2</span>
-                    </li>
-                    <li className="flex justify-between border-b border-slate-100 pb-1">
-                        <span>Tiến sĩ</span>
-                        <span className="font-bold text-blue-600">85% bậc 3</span>
-                    </li>
-                    <li className="text-xs text-slate-500 pt-1">*Người hướng dẫn: Phụ cấp trách nhiệm 0.3</li>
-                </ul>
-            </div>
-            <div>
-                <h5 className="font-bold text-slate-800 mb-2">Thời gian KHÔNG tính tập sự</h5>
-                <ListBox items={[ "Nghỉ sinh con (BHXH)." , "Nghỉ ốm đau ≥ 14 ngày."
-                    , "Nghỉ không lương; Tạm giam/giữ/đình chỉ." , "(Nghỉ ốm <14 ngày có lý do chính đáng được tính)."
-                    ]} />
-            </div>
-        </div>
-    </div>
-
-    {/* 5. Hợp đồng làm việc */}
-    <SubHeading title="5. Hợp đồng làm việc" icon={<FileText size={24} />} />
-    <div className="grid md:grid-cols-2 gap-4">
-        <Card title="Các loại hợp đồng" color="orange">
-            <ul className="list-decimal ml-4 space-y-2">
-                <li><span className="font-bold">Xác định thời hạn:</span> Từ 12 đến 60 tháng.</li>
-                <li><span className="font-bold">Không xác định thời hạn:</span>
-                    <ul className="list-disc ml-4 text-sm mt-1 text-slate-600">
-                        <li>Viên chức tuyển trước 01/7/2020.</li>
-                        <li>Sau khi hết HĐ xác định thời hạn thì chuyển sang không XĐTH.</li>
-                    </ul>
-                </li>
-            </ul>
-        </Card>
-        <Card title="Ký kết & Thực hiện" color="slate">
-            <ListBox items={[ "Ký văn bản giữa Viên chức & Người đứng đầu ĐVSNCL."
-                , "Thay đổi nội dung: Ký phụ lục hoặc HĐ mới."
-                , "Chuyển đơn vị: Không tuyển mới, không giải quyết thôi việc, ký HĐ mới." ]} />
-        </Card>
-    </div>
-
-    {/* 6. Bổ nhiệm */}
-    <SubHeading title="6. Bổ nhiệm viên chức quản lý" icon={<Award size={24} />} />
-    <Card title="Tiêu chuẩn & Điều kiện (NĐ 85/2023 sửa đổi)" color="blue">
-        <div className="grid md:grid-cols-2 gap-4">
-            <ListBox items={[ "Đạt tiêu chuẩn chung & cụ thể."
-                , "Nhân sự tại chỗ/nơi khác: Phải trong quy hoạch chức vụ tương đương trở lên."
-                , "Kinh nghiệm: Giữ chức vụ tương đương tối thiểu 02 năm (trừ bổ nhiệm lần đầu)."
-                , "Tuổi: Đủ tuổi công tác trọn nhiệm kỳ." ]} />
-            <ListBox items={[ "Sức khỏe, lý lịch rõ ràng, kê khai tài sản."
-                , "Không bị cấm, không trong thời gian thi hành kỷ luật."
-                , "Bị kỷ luật trong thời gian giữ chức -> Không bổ nhiệm cao hơn."
-                , "Thời hạn: 05 năm/lần. Bổ nhiệm lại không hạn chế số lần." ]} />
-        </div>
-        <div className="mt-4 pt-4 border-t border-slate-100">
-            <p className="font-bold mb-1 text-sm">Trách nhiệm & Thẩm quyền:</p>
-            <div className="flex flex-wrap gap-2 text-xs">
-                <span className="bg-blue-50 px-2 py-1 rounded">Người đứng đầu: Quyết định/Đề nghị</span>
-                <span className="bg-blue-50 px-2 py-1 rounded">Bộ phận tham mưu: Thẩm định</span>
-                <span className="bg-blue-50 px-2 py-1 rounded">Viên chức: Kê khai hồ sơ</span>
-            </div>
-        </div>
-    </Card>
-</SectionContainer>
-);
-};
-
-const MedicalSection = () => {
-return (
-<SectionContainer>
-    <MainTitle title="Phần III: Vị trí việc làm & Phân hạng Đơn vị Y tế" sub="Thông tư 03/2023 & 06/2024/TT-BYT" />
-
-    {/* 1. Phân hạng */}
-    <SubHeading title="1. Phân hạng đơn vị sự nghiệp y tế (TT 06/2024)" icon={<Building2 size={24} />} />
-    <div className="space-y-4">
-        <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1 bg-white p-4 rounded shadow-sm border border-slate-200">
-                <h5 className="font-bold text-blue-900 border-b pb-2 mb-2">Hệ thống phân hạng</h5>
-                <p className="mb-2 text-sm"><span className="font-bold">Cơ sở KCB:</span> Hạng Đặc biệt, I, II, III.</p>
-                <p className="text-sm"><span className="font-bold">Y tế dự phòng/TTYT...:</span> Hạng I, II, III, IV.
-                </p>
-                <p className="text-xs text-slate-500 mt-2">*Hạng Đặc biệt: Bộ Nội vụ quyết định.</p>
-            </div>
-            <div className="flex-[2] bg-white p-4 rounded shadow-sm border border-slate-200">
-                <h5 className="font-bold text-blue-900 border-b pb-2 mb-2">Tiêu chuẩn xếp hạng (Thang 100 điểm)</h5>
-                <div className="space-y-3">
-                    <div>
-                        <div className="flex justify-between text-sm mb-1">
-                            <span>Chuyên môn (Nhóm IV) - <i className="text-xs">Quan trọng nhất</i></span>
-                            <span className="font-bold">40 điểm</span>
-                        </div>
-                        <div className="w-full bg-slate-100 h-2 rounded-full">
-                            <div className="bg-red-500 h-2 rounded-full" style={{ width: '40%' }}></div>
-                        </div>
-                    </div>
-                    <div>
-                        <div className="flex justify-between text-sm mb-1">
-                            <span>Nhân lực (Nhóm III)</span>
-                            <span className="font-bold">20 điểm</span>
-                        </div>
-                        <div className="w-full bg-slate-100 h-2 rounded-full">
-                            <div className="bg-blue-500 h-2 rounded-full" style={{ width: '20%' }}></div>
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-3 gap-2 text-xs text-slate-600 mt-2">
-                        <div className="bg-slate-50 p-2 rounded text-center">
-                            <div className="font-bold">15 điểm</div>Quy mô (II)
-                        </div>
-                        <div className="bg-slate-50 p-2 rounded text-center">
-                            <div className="font-bold">15 điểm</div>Hạ tầng (V)
-                        </div>
-                        <div className="bg-slate-50 p-2 rounded text-center">
-                            <div className="font-bold">10 điểm</div>Vị trí (I)
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {/* 2. Vị trí việc làm */}
-    <SubHeading title="2. Vị trí việc làm (NĐ 106 & TT 03)" icon={<Briefcase size={24} />} />
-    <div className="grid md:grid-cols-2 gap-6">
-        <Card title="Căn cứ xác định" color="purple">
-            <ul className="space-y-2 text-sm">
-                <li><span className="font-bold">Vị trí việc làm:</span> Chức năng, nhiệm vụ, cơ cấu, mức độ phức tạp.
-                </li>
-                <li><span className="font-bold">Số lượng người:</span> VTVL, khối lượng việc, mức độ hiện đại hóa.</li>
-                <li><span className="font-bold">Cơ cấu viên chức:</span> Danh mục VTVL, tiêu chuẩn chức danh.</li>
-            </ul>
-        </Card>
-        <Card title="Phân loại & Ví dụ" color="purple">
-            <ul className="list-decimal ml-4 space-y-1 text-sm">
-                <li><span className="font-bold">Lãnh đạo, quản lý:</span> Giám đốc, Trưởng khoa...</li>
-                <li><span className="font-bold">Chức danh nghề nghiệp chuyên ngành:</span> Bác sĩ...</li>
-                <li><span className="font-bold">CDNN chuyên môn dùng chung:</span> Chuyên viên TCCB...</li>
-                <li><span className="font-bold">Hỗ trợ, phục vụ:</span> Lái xe...</li>
-            </ul>
-            <p className="text-xs mt-2 bg-purple-50 p-2 rounded">
-                <b>Vị trí quản lý BV:</b> UV HĐ Quản lý, UV Kiểm soát, Trưởng khoa, ĐD trưởng, KTY trưởng.
-            </p>
-        </Card>
-    </div>
-
-    {/* 3. Phụ cấp */}
-    <SubHeading title="3. Chế độ Phụ cấp (Tại Bệnh viện Hạng I)" icon={<Percent size={24} />} />
-    <div className="grid md:grid-cols-2 gap-6">
-        <div className="border rounded-lg overflow-hidden">
-            <table className="w-full text-sm">
-                <thead className="bg-green-50 text-green-800">
-                    <tr>
-                        <th className="p-3 text-left">Chức vụ</th>
-                        <th className="p-3 text-center">Hệ số</th>
-                    </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                    <tr>
-                        <td className="p-3">Giám đốc bệnh viện</td>
-                        <td className="p-3 text-center font-bold">1.0</td>
-                    </tr>
-                    <tr>
-                        <td className="p-3">Phó Giám đốc</td>
-                        <td className="p-3 text-center font-bold">0.8</td>
-                    </tr>
-                    <tr>
-                        <td className="p-3">Trưởng khoa/phòng</td>
-                        <td className="p-3 text-center font-bold">0.6</td>
-                    </tr>
-                    <tr>
-                        <td className="p-3">Phó khoa, ĐD trưởng, KTY trưởng</td>
-                        <td className="p-3 text-center font-bold">0.5</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-            <h4 className="font-bold text-yellow-800 mb-2">Phụ cấp thâm niên vượt khung</h4>
-            <ul className="list-disc ml-4 space-y-2 text-sm text-yellow-900">
-                <li>
-                    <span className="font-bold">Điều kiện:</span> Sau 36 tháng (ngạch A0-A3) hoặc 24 tháng (B,C) ở bậc
-                    lương cuối cùng.
-                </li>
-                <li>
-                    <span className="font-bold">Mức hưởng:</span>
-                    <span className="block mt-1 font-bold text-xl">5% <span className="text-sm font-normal">năm
-                            đầu</span></span>
-                    <span className="block">+1% <span className="text-sm font-normal">các năm tiếp theo</span></span>
-                </li>
-            </ul>
-            <div className="mt-3 bg-white p-2 rounded text-xs border border-yellow-100">
-                <b>Ví dụ (A1, hệ số 4.98):</b><br />
-                5% x (2.340.000 x 4.98) = 585.660 đ
-            </div>
-        </div>
-    </div>
-
-    {/* 4. Chế độ thường trực (Mới thêm) */}
-    <SubHeading title="4. Chế độ thường trực 24/24" icon={<Clock size={24} />} />
-    <div className="space-y-4">
-        <div className="grid md:grid-cols-2 gap-6">
-            <Card title="Mức phụ cấp (24/24 giờ)" color="blue">
-                <ul className="space-y-2 text-sm">
-                    <li className="flex justify-between border-b pb-1">
-                        <span>BV Hạng I, Đặc biệt</span>
-                        <span className="font-bold text-blue-700">115.000 đ</span>
-                    </li>
-                    <li className="flex justify-between border-b pb-1">
-                        <span>BV Hạng II</span>
-                        <span className="font-bold text-blue-700">90.000 đ</span>
-                    </li>
-                    <li className="flex justify-between border-b pb-1">
-                        <span>BV còn lại</span>
-                        <span className="font-bold text-blue-700">65.000 đ</span>
-                    </li>
-                    <li className="flex justify-between">
-                        <span>Trạm y tế xã</span>
-                        <span className="font-bold text-blue-700">25.000 đ</span>
-                    </li>
-                </ul>
-                <div className="mt-3 bg-blue-50 p-2 rounded text-xs">
-                    <p><b>Theo ca:</b> 12h = 0.5x; 16h = 0.75x</p>
-                    <p className="mt-1"><b>Hỗ trợ tiền ăn:</b> 15.000 đ/người/phiên (24h)</p>
-                </div>
-            </Card>
-
-            <Card title="Hệ số điều chỉnh & Nghỉ bù" color="green">
-                <div className="mb-3">
-                    <p className="font-bold text-sm mb-1 text-green-800">Hệ số tăng thêm:</p>
-                    <div className="grid grid-cols-3 gap-1 text-center text-xs">
-                        <div className="bg-green-50 p-1 rounded border border-green-100">
-                            <b>1.5 lần</b><br />Hồi sức/CSĐB
-                        </div>
-                        <div className="bg-green-50 p-1 rounded border border-green-100">
-                            <b>1.3 lần</b><br />Ngày nghỉ tuần
-                        </div>
-                        <div className="bg-green-50 p-1 rounded border border-green-100">
-                            <b>1.8 lần</b><br />Lễ, Tết
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <p className="font-bold text-sm mb-1 text-green-800">Chế độ nghỉ bù (sau trực 24h):</p>
-                    <ul className="text-sm list-disc ml-4 space-y-1">
-                        <li>Ngày thường/Nghỉ tuần: Nghỉ <b>01 ngày</b>.</li>
-                        <li>Lễ, Tết: Nghỉ <b>02 ngày</b>.</li>
-                        <li>Trực ca 12h/16h: Nghỉ ít nhất <b>12h</b> tiếp theo.</li>
-                    </ul>
-                </div>
-            </Card>
-        </div>
-        <div className="bg-orange-50 p-3 rounded border border-orange-200 text-sm flex items-start gap-2">
-            <AlertTriangle size={16} className="text-orange-600 mt-1 shrink-0" />
-            <div>
-                <b>Lưu ý:</b> Nếu huy động làm việc vào giờ nghỉ bù hoặc làm thêm giờ -&gt; Trả lương làm thêm giờ. Làm
-                đêm -&gt; Trả lương làm đêm.
-            </div>
-        </div>
-    </div>
-</SectionContainer>
-);
-};
-
-const AdminSection = () => {
-return (
-<SectionContainer>
-    <MainTitle title="Phần VI: Văn bản Hành chính" sub="Quy định về thể thức và kỹ thuật trình bày" />
-
-    {/* Điều 7 */}
-    <SubHeading title="1. Các loại văn bản hành chính (Điều 7)" icon={<FileText size={24} />} />
-    <Card title="Danh mục các loại văn bản" color="blue">
-        <div className="flex flex-wrap gap-2">
-            {[
-            "Nghị quyết (cá biệt)", "Quyết định (cá biệt)", "Chỉ thị", "Quy chế", "Quy định",
-            "Thông cáo", "Thông báo", "Hướng dẫn", "Chương trình", "Kế hoạch",
-            "Phương án", "Đề án", "Dự án", "Báo cáo", "Biên bản", "Tờ trình",
-            "Hợp đồng", "Công văn", "Công điện", "Bản ghi nhớ", "Bản thỏa thuận",
-            "Giấy ủy quyền", "Giấy mời", "Giấy giới thiệu", "Giấy nghỉ phép",
-            "Phiếu gửi", "Phiếu chuyển", "Phiếu báo", "Thư công"
-            ].map((item, idx) => (
-            <span key={idx} className="bg-blue-50 text-blue-800 px-2 py-1 rounded text-sm border border-blue-100">
-                {item}
-            </span>
-            ))}
-        </div>
-    </Card>
-
-    {/* Điều 8 */}
-    <SubHeading title="2. Thể thức văn bản (Điều 8)" icon={<BookOpen size={24} />} />
-    <div className="space-y-6">
-        <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
-            <h4 className="font-bold text-slate-800 mb-2">Định nghĩa</h4>
-            <p className="text-sm text-slate-600">
-                Thể thức văn bản là tập hợp các thành phần cấu thành văn bản, bao gồm những thành phần chính áp dụng đối
-                với tất cả các loại văn bản và các thành phần bổ sung trong những trường hợp cụ thể hoặc đối với một số
-                loại văn bản nhất định.
-            </p>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-6">
-            <Card title="Thành phần CHÍNH" color="green">
-                <ListBox type="decimal" items={[ "Quốc hiệu và Tiêu ngữ." , "Tên cơ quan, tổ chức ban hành văn bản."
-                    , "Số, ký hiệu của văn bản." , "Địa danh và thời gian ban hành văn bản."
-                    , "Tên loại và trích yếu nội dung văn bản." , "Nội dung văn bản."
-                    , "Chức vụ, họ tên và chữ ký của người có thẩm quyền." , "Dấu, chữ ký số của cơ quan, tổ chức."
-                    , "Nơi nhận." ]} />
-            </Card>
-
-            <Card title="Thành phần BỔ SUNG" color="orange">
-                <ListBox type="decimal" items={[ "Phụ lục."
-                    , "Dấu chỉ độ mật, mức độ khẩn, các chỉ dẫn về phạm vi lưu hành."
-                    , "Ký hiệu người soạn thảo văn bản và số lượng bản phát hành."
-                    , "Địa chỉ cơ quan, tổ chức; thư điện tử; trang thông tin điện tử; số điện thoại; số Fax." ]} />
-            </Card>
-        </div>
-    </div>
-</SectionContainer>
-);
-};
-
-const RewardSection = () => {
-return (
-<SectionContainer>
-    <MainTitle title="Phần IV: Luật Thi Đua, Khen Thưởng" sub="Năm 2022" />
-
-    <div className="grid md:grid-cols-2 gap-6 mb-8">
-        <Card title="1. Mục tiêu" color="blue">
-            <ul className="list-disc ml-4 space-y-2 text-sm">
-                <li><b>Thi đua:</b> Động viên cá nhân/tập thể phát huy truyền thống, đoàn kết, sáng tạo, hoàn thành
-                    nhiệm vụ...</li>
-                <li><b>Khen thưởng:</b> Khuyến khích, động viên; ghi nhận công lao, thành tích cá nhân/tập thể/hộ gia
-                    đình.</li>
-            </ul>
-        </Card>
-        <Card title="2. Nguyên tắc" color="orange">
-            <div className="space-y-3 text-sm">
-                <div>
-                    <span className="font-bold text-orange-700 block mb-1">Thi đua:</span>
-                    Tự nguyện, tự giác; Công bằng; Công khai; Đoàn kết; Cùng phát triển.
-                </div>
-                <div>
-                    <span className="font-bold text-orange-700 block mb-1">Khen thưởng:</span>
-                    <ListBox items={[ "Chính xác, công khai, công bằng, kịp thời."
-                        , "Thống nhất hình thức với thành tích."
-                        , "Một hình thức tặng nhiều lần / Không tặng nhiều hình thức cho 1 thành tích."
-                        , "Thành tích đến đâu khen đến đó." , "Chú trọng lao động trực tiếp, vùng khó khăn." ]} />
-                </div>
-            </div>
-        </Card>
-    </div>
-
-    <SubHeading title="3. Danh hiệu & Hình thức khen thưởng" icon={<Award size={24} />} />
-    <div className="grid md:grid-cols-3 gap-4">
-        <Card title="Danh hiệu thi đua" color="green">
-            <div className="flex flex-col gap-2">
-                <span className="bg-green-50 p-2 rounded text-center">Cá nhân</span>
-                <span className="bg-green-50 p-2 rounded text-center">Tập thể</span>
-                <span className="bg-green-50 p-2 rounded text-center">Hộ gia đình</span>
-            </div>
-        </Card>
-        <Card title="Loại hình khen thưởng" color="purple">
-            <ul className="text-sm space-y-1">
-                <li>• Công trạng</li>
-                <li>• Đột xuất</li>
-                <li>• Phong trào thi đua</li>
-                <li>• Quá trình cống hiến</li>
-                <li>• Theo niên hạn</li>
-                <li>• Đối ngoại</li>
-            </ul>
-        </Card>
-        <Card title="Hình thức khen thưởng" color="red">
-            <ul className="text-sm space-y-1">
-                <li>• Huân chương</li>
-                <li>• Huy chương</li>
-                <li>• Danh hiệu vinh dự NN</li>
-                <li>• Giải thưởng HCM/NN</li>
-                <li>• Kỷ niệm chương</li>
-                <li>• Bằng khen / Giấy khen</li>
-            </ul>
-        </Card>
-    </div>
-    <p className="mt-4 text-center text-sm text-slate-500">
-        <b>Căn cứ xét:</b> Thành tích đạt được; Tiêu chuẩn; Điều kiện & hoàn cảnh.
-    </p>
-</SectionContainer>
-);
-};
-
-const HospitalSection = () => {
-return (
-<SectionContainer>
-    <MainTitle title="Phần V: Bệnh Viện Nhi Đồng Thành Phố" />
-
-    <div className="grid md:grid-cols-2 gap-6 mb-8">
-        <div className="bg-gradient-to-br from-blue-500 to-blue-700 text-white p-6 rounded-xl shadow-lg">
-            <h3 className="text-xl font-bold mb-4 border-b border-blue-400 pb-2">Thông tin Đơn vị</h3>
-            <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                    <span>Phân hạng</span>
-                    <span className="font-bold text-xl">Hạng 1</span>
-                </div>
-                <div className="flex justify-between items-center">
-                    <span>Loại hình</span>
-                    <span className="font-medium">Đơn vị sự nghiệp công lập</span>
-                </div>
-                <div className="flex justify-between items-center">
-                    <span>Áp dụng NĐ 115</span>
-                    <span className="font-bold">Có</span>
-                </div>
-                <div className="pt-2">
-                    <p className="text-blue-200 text-sm">Giám đốc</p>
-                    <p className="font-bold text-lg">Ông Trương Quang Định</p>
-                </div>
-                <div>
-                    <p className="text-blue-200 text-sm">Bộ trưởng Bộ Y tế</p>
-                    <p className="font-bold text-lg">Bà Đào Hồng Lan</p>
-                </div>
-            </div>
-        </div>
-
-        <div className="flex flex-col gap-4">
+        <!-- Navigation -->
+        <div class="max-w-6xl mx-auto mb-8 sticky top-0 z-50">
             <div
-                className="bg-white p-6 rounded-xl shadow-md border-l-8 border-cyan-500 flex-1 flex flex-col justify-center items-center text-center">
-                <h4 className="text-slate-500 uppercase tracking-widest text-sm mb-2">Giá Trị Cốt Lõi</h4>
-                <div className="text-2xl font-bold text-cyan-700 space-y-1 md:space-y-0">
-                    "Tận tâm - Năng động <br className="md:hidden" /> - Hợp tác - Công bằng"
-                </div>
+                class="flex flex-wrap justify-center gap-2 md:gap-4 bg-white p-3 rounded-xl shadow-lg border border-slate-200">
+                <button onclick="switchTab('labor')" id="tab-labor"
+                    class="tab-btn active flex items-center gap-2 px-4 py-3 rounded-lg transition-all duration-200 font-bold text-sm md:text-base bg-blue-700 text-white shadow-md transform scale-105">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="20" height="14" x="2" y="7" rx="2" ry="2" />
+                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                    </svg>
+                    <span class="hidden md:inline">Bộ Luật Lao Động</span>
+                </button>
+                <button onclick="switchTab('official')" id="tab-official"
+                    class="tab-btn flex items-center gap-2 px-4 py-3 rounded-lg transition-all duration-200 font-bold text-sm md:text-base bg-slate-50 text-slate-600 hover:bg-blue-50 hover:text-blue-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                    <span class="hidden md:inline">Viên Chức (NĐ 115)</span>
+                </button>
+                <button onclick="switchTab('medical')" id="tab-medical"
+                    class="tab-btn flex items-center gap-2 px-4 py-3 rounded-lg transition-all duration-200 font-bold text-sm md:text-base bg-slate-50 text-slate-600 hover:bg-blue-50 hover:text-blue-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z" />
+                        <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" />
+                        <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2" />
+                        <path d="M10 6h4" />
+                        <path d="M10 10h4" />
+                        <path d="M10 14h4" />
+                        <path d="M10 18h4" />
+                    </svg>
+                    <span class="hidden md:inline">Y Tế & VTVL</span>
+                </button>
+                <button onclick="switchTab('admin')" id="tab-admin"
+                    class="tab-btn flex items-center gap-2 px-4 py-3 rounded-lg transition-all duration-200 font-bold text-sm md:text-base bg-slate-50 text-slate-600 hover:bg-blue-50 hover:text-blue-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" x2="8" y1="13" y2="13" />
+                        <line x1="16" x2="8" y1="17" y2="17" />
+                        <line x1="10" x2="8" y1="9" y2="9" />
+                    </svg>
+                    <span class="hidden md:inline">Văn bản Hành chính</span>
+                </button>
+                <button onclick="switchTab('test')" id="tab-test"
+                    class="tab-btn flex items-center gap-2 px-4 py-3 rounded-lg transition-all duration-200 font-bold text-sm md:text-base bg-slate-50 text-slate-600 hover:bg-blue-50 hover:text-blue-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m9 11 3 3L22 4" />
+                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                    </svg>
+                    <span class="hidden md:inline">Kiểm tra</span>
+                </button>
+                <button onclick="switchTab('reward')" id="tab-reward"
+                    class="tab-btn flex items-center gap-2 px-4 py-3 rounded-lg transition-all duration-200 font-bold text-sm md:text-base bg-slate-50 text-slate-600 hover:bg-blue-50 hover:text-blue-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="8" r="7" />
+                        <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
+                    </svg>
+                    <span class="hidden md:inline">Thi Đua Khen Thưởng</span>
+                </button>
+                <button onclick="switchTab('hospital')" id="tab-hospital"
+                    class="tab-btn flex items-center gap-2 px-4 py-3 rounded-lg transition-all duration-200 font-bold text-sm md:text-base bg-slate-50 text-slate-600 hover:bg-blue-50 hover:text-blue-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+                    </svg>
+                    <span class="hidden md:inline">BV Nhi Đồng TP</span>
+                </button>
             </div>
         </div>
-    </div>
 
-    <SubHeading title="Xử lý tình huống thường gặp" icon={<AlertTriangle size={24} />} />
-    <div className="space-y-4">
-        <Card title="1. Bảo mật thông tin (Đồng nghiệp hỏi lương/kỷ luật/bổ nhiệm)" color="orange">
-            <ul className="list-disc ml-4 space-y-1">
-                <li>Giải thích về nguyên tắc bảo mật và đạo đức nghề nghiệp.</li>
-                <li>Giải thích việc tiết lộ sớm có thể làm sai lệch quy trình.</li>
-                <li>Đề nghị đợi thông báo chính thức để đảm bảo xác thực và công bằng.</li>
-            </ul>
-        </Card>
-        <Card title="2. Điều dưỡng viên muốn nghỉ việc (HĐVB 24 tháng)" color="red">
-            <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                    <p className="font-bold text-red-700 mb-1">Quy định chung:</p>
-                    <p>Phải báo trước ít nhất <b>30 ngày</b>.</p>
+        <!-- Content Area -->
+        <div class="max-w-6xl mx-auto">
+            <div class="bg-white rounded-2xl shadow-xl min-h-[500px] p-1">
+                <!-- Labor Section -->
+                <div id="section-labor" class="section p-4 md:p-8 animate-fade-in block">
+                    <div class="mb-8 border-b pb-4">
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-blue-900 uppercase tracking-tight">Phần I:
+                            Kiến thức về Bộ Luật Lao Động</h2>
+                        <p class="text-slate-500 mt-2 text-lg">Số 45/2019/QH14</p>
+                    </div>
+
+                    <!-- 1. Phạm vi & Hiệu lực -->
+                    <h3
+                        class="flex items-center gap-2 text-xl font-bold text-slate-800 mt-8 mb-4 border-l-4 border-blue-600 pl-3">
+                        <span class="text-blue-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                            </svg>
+                        </span>
+                        1. Phạm vi điều chỉnh và Hiệu lực thi hành
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div
+                            class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-blue-600">
+                            <h4 class="font-bold text-lg mb-3 text-blue-700">Phạm vi điều chỉnh</h4>
+                            <div class="text-slate-700 text-sm leading-relaxed">
+                                <ul class="space-y-2 ml-4 list-disc marker:text-blue-500">
+                                    <li class="pl-1">Quy định tiêu chuẩn lao động.</li>
+                                    <li class="pl-1">Quyền, nghĩa vụ, trách nhiệm của người lao động.</li>
+                                    <li class="pl-1">Quyền, nghĩa vụ, trách nhiệm của người sử dụng lao động.</li>
+                                    <li class="pl-1">Quyền, nghĩa vụ, trách nhiệm của tổ chức đại diện người lao động
+                                        tại cơ sở, tổ chức đại diện người sử dụng lao động trong quan hệ lao động và các
+                                        quan hệ khác liên quan trực tiếp đến quan hệ lao động.</li>
+                                    <li class="pl-1">Quản lý nhà nước về lao động.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div
+                            class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-green-600">
+                            <h4 class="font-bold text-lg mb-3 text-green-700">Hiệu lực thi hành</h4>
+                            <div class="text-slate-700 text-sm leading-relaxed flex items-center justify-center h-full">
+                                <div class="text-center">
+                                    <p class="text-slate-500 mb-2">Ngày có hiệu lực</p>
+                                    <p class="text-3xl font-bold text-green-700">01/01/2021</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Tuổi nghỉ hưu -->
+                    <h3
+                        class="flex items-center gap-2 text-xl font-bold text-slate-800 mt-8 mb-4 border-l-4 border-blue-600 pl-3">
+                        <span class="text-blue-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                                <line x1="16" x2="16" y1="2" y2="6" />
+                                <line x1="8" x2="8" y1="2" y2="6" />
+                                <line x1="3" x2="21" y1="10" y2="10" />
+                            </svg>
+                        </span>
+                        2. Tuổi nghỉ hưu (Lộ trình đến năm 2026)
+                    </h3>
+                    <div class="flex gap-6 justify-center bg-slate-50 p-6 rounded-xl border border-slate-200">
+                        <div class="text-center bg-white p-4 rounded-lg shadow-sm w-48">
+                            <div class="text-blue-600 font-bold text-lg mb-1">NAM</div>
+                            <div class="text-4xl font-extrabold text-slate-800">61</div>
+                            <div class="text-sm text-slate-500 font-medium">tuổi 6 tháng</div>
+                        </div>
+                        <div class="text-center bg-white p-4 rounded-lg shadow-sm w-48">
+                            <div class="text-pink-600 font-bold text-lg mb-1">NỮ</div>
+                            <div class="text-4xl font-extrabold text-slate-800">57</div>
+                            <div class="text-sm text-slate-500 font-medium">tuổi</div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Quyền & Nghĩa vụ -->
+                    <h3
+                        class="flex items-center gap-2 text-xl font-bold text-slate-800 mt-8 mb-4 border-l-4 border-blue-600 pl-3">
+                        <span class="text-blue-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z" />
+                                <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z" />
+                                <path d="M7 21h10" />
+                                <path d="M12 3v18" />
+                                <path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2" />
+                            </svg>
+                        </span>
+                        3. Quyền và Nghĩa vụ của các bên
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div
+                            class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-blue-600">
+                            <h4 class="font-bold text-lg mb-3 text-blue-700">Quyền của Người lao động</h4>
+                            <div class="text-slate-700 text-sm leading-relaxed">
+                                <ul class="space-y-2 ml-4 list-decimal marker:text-blue-500">
+                                    <li class="pl-1">Làm việc; tự do lựa chọn việc làm, nơi làm việc, nghề nghiệp, học
+                                        nghề, nâng cao trình độ nghề nghiệp; không bị phân biệt đối xử, cưỡng bức lao
+                                        động, quấy rối tình dục tại nơi làm việc.</li>
+                                    <li class="pl-1">Hưởng lương phù hợp với trình độ, kỹ năng nghề trên cơ sở thỏa
+                                        thuận; được bảo hộ lao động, làm việc trong điều kiện bảo đảm an toàn, vệ sinh;
+                                        nghỉ theo chế độ, nghỉ hằng năm có hưởng lương và phúc lợi tập thể.</li>
+                                    <li class="pl-1">Thành lập, gia nhập, hoạt động trong tổ chức đại diện NLĐ, tổ chức
+                                        nghề nghiệp; yêu cầu và tham gia đối thoại, quy chế dân chủ, thương lượng tập
+                                        thể, được tham vấn; tham gia quản lý theo nội quy.</li>
+                                    <li class="pl-1">Từ chối làm việc nếu có nguy cơ rõ ràng đe dọa trực tiếp đến tính
+                                        mạng, sức khỏe trong quá trình thực hiện công việc.</li>
+                                    <li class="pl-1">Đơn phương chấm dứt hợp đồng lao động.</li>
+                                    <li class="pl-1">Đình công.</li>
+                                    <li class="pl-1">Các quyền khác theo quy định của pháp luật.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div
+                            class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-purple-600">
+                            <h4 class="font-bold text-lg mb-3 text-purple-700">Quyền của Người sử dụng lao động</h4>
+                            <div class="text-slate-700 text-sm leading-relaxed">
+                                <ul class="space-y-2 ml-4 list-decimal marker:text-blue-500">
+                                    <li class="pl-1">Tuyển dụng, bố trí, quản lý, điều hành, giám sát lao động; khen
+                                        thưởng và xử lý vi phạm kỷ luật lao động.</li>
+                                    <li class="pl-1">Thành lập, gia nhập, hoạt động trong tổ chức đại diện NSDLĐ, tổ
+                                        chức nghề nghiệp và tổ chức khác.</li>
+                                    <li class="pl-1">Yêu cầu tổ chức đại diện NLĐ thương lượng với mục đích ký kết thỏa
+                                        ước lao động tập thể.</li>
+                                    <li class="pl-1">Tham gia giải quyết tranh chấp lao động, đình công.</li>
+                                    <li class="pl-1">Đối thoại, trao đổi với tổ chức đại diện NLĐ về các vấn đề trong
+                                        quan hệ lao động, cải thiện đời sống vật chất và tinh thần của NLĐ.</li>
+                                    <li class="pl-1">Đóng cửa tạm thời nơi làm việc.</li>
+                                    <li class="pl-1">Các quyền khác theo quy định của pháp luật.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Nghiêm cấm -->
+                    <h3
+                        class="flex items-center gap-2 text-xl font-bold text-slate-800 mt-8 mb-4 border-l-4 border-blue-600 pl-3">
+                        <span class="text-blue-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path
+                                    d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                                <line x1="12" y1="9" x2="12" y2="13" />
+                                <line x1="12" y1="17" x2="12.01" y2="17" />
+                            </svg>
+                        </span>
+                        4. Các hành vi bị nghiêm cấm
+                    </h3>
+                    <div class="p-4 rounded-lg border bg-red-50 text-red-900 border-red-200 mb-4">
+                        <div class="font-bold mb-2 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path
+                                    d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                                <line x1="12" y1="9" x2="12" y2="13" />
+                                <line x1="12" y1="17" x2="12.01" y2="17" />
+                            </svg>
+                            7 Hành vi bị nghiêm cấm
+                        </div>
+                        <div class="text-sm">
+                            <ul class="space-y-2 ml-4 list-decimal marker:text-blue-500">
+                                <li class="pl-1">Phân biệt đối xử trong lao động.</li>
+                                <li class="pl-1">Ngược đãi người lao động, cưỡng bức lao động.</li>
+                                <li class="pl-1">Quấy rối tình dục tại nơi làm việc.</li>
+                                <li class="pl-1">Lợi dụng danh nghĩa dạy nghề, tập nghề để trục lợi, bóc lột sức lao
+                                    động hoặc lôi kéo, dụ dỗ, ép buộc người học nghề, người tập nghề vào hoạt động trái
+                                    pháp luật.</li>
+                                <li class="pl-1">Sử dụng lao động chưa qua đào tạo hoặc chưa có chứng chỉ kỹ năng nghề
+                                    quốc gia đối với nghề, công việc phải sử dụng lao động đã được đào tạo hoặc phải có
+                                    chứng chỉ.</li>
+                                <li class="pl-1">Lôi kéo, dụ dỗ, hứa hẹn, quảng cáo gian dối hoặc thủ đoạn khác để lừa
+                                    gạt NLĐ hoặc để tuyển dụng NLĐ với mục đích mua bán người, bóc lột, cưỡng bức lao
+                                    động hoặc lợi dụng dịch vụ việc làm, hoạt động đưa NLĐ đi làm việc ở nước ngoài theo
+                                    HĐ để thực hiện hành vi trái pháp luật.</li>
+                                <li class="pl-1">Sử dụng lao động chưa thành niên trái pháp luật.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- 5. Hợp đồng lao động -->
+                    <h3
+                        class="flex items-center gap-2 text-xl font-bold text-slate-800 mt-8 mb-4 border-l-4 border-blue-600 pl-3">
+                        <span class="text-blue-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                                <polyline points="14 2 14 8 20 8" />
+                                <line x1="16" x2="8" y1="13" y2="13" />
+                                <line x1="16" x2="8" y1="17" y2="17" />
+                                <line x1="10" x2="8" y1="9" y2="9" />
+                            </svg>
+                        </span>
+                        5. Hợp đồng lao động
+                    </h3>
+                    <div class="space-y-6">
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div
+                                class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-blue-600">
+                                <h4 class="font-bold text-lg mb-3 text-blue-700">Nguyên tắc giao kết</h4>
+                                <div class="text-slate-700 text-sm leading-relaxed">
+                                    <ul class="space-y-2 ml-4 list-disc marker:text-blue-500">
+                                        <li class="pl-1">Tự nguyện.</li>
+                                        <li class="pl-1">Bình đẳng.</li>
+                                        <li class="pl-1">Thiện chí.</li>
+                                        <li class="pl-1">Hợp tác.</li>
+                                        <li class="pl-1">Trung thực.</li>
+                                        <li class="pl-1">Tự do giao kết nhưng không trái pháp luật, thỏa ước LĐTT và đạo
+                                            đức xã hội.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div
+                                class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-orange-600">
+                                <h4 class="font-bold text-lg mb-3 text-orange-700">Tạm hoãn thực hiện HĐLĐ</h4>
+                                <div class="text-slate-700 text-sm leading-relaxed">
+                                    <ul class="space-y-2 ml-4 list-disc marker:text-blue-500">
+                                        <li class="pl-1">NLĐ thực hiện nghĩa vụ quân sự, nghĩa vụ tham gia Dân quân tự
+                                            vệ.</li>
+                                        <li class="pl-1">NLĐ bị tạm giữ, tạm giam theo quy định tố tụng hình sự.</li>
+                                        <li class="pl-1">NLĐ phải chấp hành quyết định áp dụng biện pháp đưa vào trường
+                                            giáo dưỡng, cơ sở cai nghiện/giáo dục bắt buộc.</li>
+                                        <li class="pl-1">Lao động nữ mang thai theo quy định tại Điều 138.</li>
+                                        <li class="pl-1">Được bổ nhiệm làm quản lý doanh nghiệp (công ty TNHH MTV Nhà
+                                            nước nắm 100% vốn).</li>
+                                        <li class="pl-1">Được ủy quyền đại diện phần vốn nhà nước/doanh nghiệp tại doanh
+                                            nghiệp khác.</li>
+                                        <li class="pl-1">Trường hợp khác do hai bên thỏa thuận.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-slate-600">
+                            <h4 class="font-bold text-lg mb-3 text-slate-800">Nội dung chủ yếu của HĐLĐ</h4>
+                            <div class="text-slate-700 text-sm leading-relaxed grid md:grid-cols-2 gap-4">
+                                <ul class="space-y-2 ml-4 list-disc marker:text-blue-500">
+                                    <li class="pl-1">Tên, địa chỉ NSDLĐ và họ tên, chức danh người đại diện.</li>
+                                    <li class="pl-1">Họ tên, ngày sinh, giới tính, nơi cư trú, số CCCD/CMND/Hộ chiếu
+                                        người lao động.</li>
+                                    <li class="pl-1">Công việc và địa điểm làm việc; Thời hạn hợp đồng.</li>
+                                    <li class="pl-1">Mức lương, hình thức trả, thời hạn trả, phụ cấp và các khoản bổ
+                                        sung.</li>
+                                </ul>
+                                <ul class="space-y-2 ml-4 list-disc marker:text-blue-500">
+                                    <li class="pl-1">Chế độ nâng bậc, nâng lương; Thời giờ làm việc, nghỉ ngơi.</li>
+                                    <li class="pl-1">Trang bị bảo hộ lao động.</li>
+                                    <li class="pl-1">BHXH, BHYT, BHTN.</li>
+                                    <li class="pl-1">Đào tạo, bồi dưỡng, nâng cao trình độ, kỹ năng nghề.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div
+                            class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-red-600">
+                            <h4 class="font-bold text-lg mb-3 text-red-700">Chấm dứt Hợp đồng lao động</h4>
+                            <div class="text-slate-700 text-sm leading-relaxed">
+                                <h5 class="font-bold text-slate-800 mb-2">Các trường hợp chấm dứt:</h5>
+                                <ul class="space-y-2 ml-4 list-disc marker:text-blue-500">
+                                    <li class="pl-1">Hết hạn HĐLĐ (trừ trường hợp quy định).</li>
+                                    <li class="pl-1">Đã hoàn thành công việc; Thỏa thuận chấm dứt.</li>
+                                    <li class="pl-1">NLĐ bị kết án tù (không hưởng án treo/không được trả tự do), tử
+                                        hình, cấm làm công việc ghi trong HĐ.</li>
+                                    <li class="pl-1">NLĐ chết; bị Tòa án tuyên bố mất năng lực hành vi, mất tích hoặc đã
+                                        chết.</li>
+                                    <li class="pl-1">NSDLĐ (cá nhân) chết/mất năng lực/mất tích; NSDLĐ (tổ chức) chấm
+                                        dứt hoạt động.</li>
+                                    <li class="pl-1">NLĐ bị xử lý kỷ luật sa thải.</li>
+                                    <li class="pl-1">Thử việc không đạt yêu cầu hoặc một bên hủy bỏ thỏa thuận thử việc.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
+                            <h4 class="text-xl font-bold text-blue-900 mb-4">Quyền đơn phương chấm dứt HĐLĐ của NLĐ</h4>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <h5 class="font-bold text-blue-800 mb-2 border-b border-blue-200 pb-1">Thời hạn báo
+                                        trước</h5>
+                                    <ul class="space-y-3 text-sm">
+                                        <li class="flex justify-between items-center bg-white p-2 rounded shadow-sm">
+                                            <span>HĐ không xác định thời hạn</span>
+                                            <span class="font-bold text-blue-600">Ít nhất 45 ngày</span>
+                                        </li>
+                                        <li class="flex justify-between items-center bg-white p-2 rounded shadow-sm">
+                                            <span>HĐ 12 - 36 tháng</span>
+                                            <span class="font-bold text-blue-600">Ít nhất 30 ngày</span>
+                                        </li>
+                                        <li class="flex justify-between items-center bg-white p-2 rounded shadow-sm">
+                                            <span>HĐ dưới 12 tháng</span>
+                                            <span class="font-bold text-blue-600">Ít nhất 03 ngày làm việc</span>
+                                        </li>
+                                        <li class="text-xs text-slate-500 italic">*Ngành nghề đặc thù: theo quy định CP.
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 class="font-bold text-blue-800 mb-2 border-b border-blue-200 pb-1">Không cần báo
+                                        trước</h5>
+                                    <ul class="space-y-2 ml-4 list-disc marker:text-blue-500">
+                                        <li class="pl-1">Không được bố trí đúng công việc, địa điểm hoặc điều kiện làm
+                                            việc.</li>
+                                        <li class="pl-1">Không được trả đủ lương hoặc trả không đúng thời hạn.</li>
+                                        <li class="pl-1">Bị ngược đãi, đánh đập, nhục mạ, ảnh hưởng sức khỏe/nhân phẩm;
+                                            bị cưỡng bức lao động.</li>
+                                        <li class="pl-1">Bị quấy rối tình dục tại nơi làm việc.</li>
+                                        <li class="pl-1">Lao động nữ mang thai phải nghỉ việc theo quy định.</li>
+                                        <li class="pl-1">Đủ tuổi nghỉ hưu.</li>
+                                        <li class="pl-1">NSDLĐ cung cấp thông tin không trung thực ảnh hưởng đến HĐLĐ.
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 6. Thời giờ làm việc - Lương -->
+                    <h3
+                        class="flex items-center gap-2 text-xl font-bold text-slate-800 mt-8 mb-4 border-l-4 border-blue-600 pl-3">
+                        <span class="text-blue-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <line x1="19" y1="5" x2="5" y2="19" />
+                                <circle cx="6.5" cy="6.5" r="2.5" />
+                                <circle cx="17.5" cy="17.5" r="2.5" />
+                            </svg>
+                        </span>
+                        6. Thời giờ làm việc, Nghỉ ngơi & Tiền lương
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div
+                                class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-green-600">
+                                <h4 class="font-bold text-lg mb-3 text-green-700">Thời giờ làm việc</h4>
+                                <div class="text-slate-700 text-sm leading-relaxed space-y-2">
+                                    <p><span class="font-bold">Bình thường:</span> Max 08h/ngày, 48h/tuần.</p>
+                                    <p><span class="font-bold">Ban đêm:</span> 22h00 - 06h00 hôm sau.</p>
+                                </div>
+                            </div>
+                            <div
+                                class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-green-600">
+                                <h4 class="font-bold text-lg mb-3 text-green-700">Nghỉ phép năm</h4>
+                                <div class="text-slate-700 text-sm leading-relaxed">
+                                    <ul class="space-y-1">
+                                        <li><span class="font-bold text-green-700">12 ngày:</span> Đk bình thường.</li>
+                                        <li><span class="font-bold text-green-700">14 ngày:</span> Chưa thành niên,
+                                            khuyết tật, nặng nhọc, độc hại.</li>
+                                        <li><span class="font-bold text-green-700">16 ngày:</span> Đặc biệt nặng nhọc,
+                                            độc hại, nguy hiểm.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div
+                                class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-green-600">
+                                <h4 class="font-bold text-lg mb-3 text-green-700">Nghỉ Lễ, Tết (11 ngày)</h4>
+                                <div class="text-slate-700 text-sm leading-relaxed">
+                                    <ul class="text-sm space-y-1">
+                                        <li>Tết Dương lịch: 1</li>
+                                        <li>Tết Âm lịch: 5</li>
+                                        <li>30/4 & 1/5: 2</li>
+                                        <li>Quốc khánh: 2 (2/9 + 1 ngày)</li>
+                                        <li>Giỗ Tổ (10/3 âm): 1</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                                <h4 class="font-bold text-orange-800 mb-3">Nghỉ việc riêng hưởng nguyên lương</h4>
+                                <div class="grid grid-cols-2 gap-4 text-sm">
+                                    <div>
+                                        <p class="font-bold">Bản thân kết hôn</p>
+                                        <p class="text-2xl font-bold text-orange-600">03 ngày</p>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold">Con kết hôn</p>
+                                        <p class="text-2xl font-bold text-orange-600">01 ngày</p>
+                                    </div>
+                                    <div class="col-span-2 border-t border-orange-200 pt-2">
+                                        <p class="font-bold">Cha/Mẹ (đẻ/nuôi/vợ/chồng) chết; Vợ/Chồng chết; Con chết</p>
+                                        <p class="text-2xl font-bold text-orange-600">03 ngày</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                                <h4 class="font-bold text-yellow-800 mb-3">Tiền lương làm thêm giờ</h4>
+                                <ul class="space-y-2 text-sm">
+                                    <li class="flex justify-between"><span>Ngày thường</span> <b
+                                            class="text-yellow-700">≥ 150%</b></li>
+                                    <li class="flex justify-between"><span>Ngày nghỉ tuần</span> <b
+                                            class="text-yellow-700">≥ 200%</b></li>
+                                    <li class="flex justify-between"><span>Lễ, Tết, ngày nghỉ có lương</span> <b
+                                            class="text-yellow-700">≥ 300%</b></li>
+                                    <li class="border-t border-yellow-200 pt-1 mt-1">
+                                        <span class="font-bold">Làm thêm ban đêm:</span> <br />
+                                        Ngoài trả lương làm thêm + làm đêm, trả thêm <b class="text-yellow-700">20%</b>
+                                        tiền lương ngày bình thường/nghỉ tuần/lễ tết.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 7. Nội quy & Kỷ luật -->
+                    <h3
+                        class="flex items-center gap-2 text-xl font-bold text-slate-800 mt-8 mb-4 border-l-4 border-blue-600 pl-3">
+                        <span class="text-blue-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path
+                                    d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+                            </svg>
+                        </span>
+                        7. Nội quy lao động và Kỷ luật lao động
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div
+                            class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-slate-600">
+                            <h4 class="font-bold text-lg mb-3 text-slate-800">Nội dung Nội quy lao động</h4>
+                            <div class="text-slate-700 text-sm leading-relaxed">
+                                <ul class="space-y-2 ml-4 list-decimal marker:text-blue-500">
+                                    <li class="pl-1">Thời giờ làm việc, nghỉ ngơi; Trật tự nơi làm việc.</li>
+                                    <li class="pl-1">An toàn, vệ sinh lao động.</li>
+                                    <li class="pl-1">Phòng, chống quấy rối tình dục; quy trình xử lý.</li>
+                                    <li class="pl-1">Bảo vệ tài sản, bí mật kinh doanh/công nghệ, sở hữu trí tuệ.</li>
+                                    <li class="pl-1">Trường hợp tạm thời chuyển NLĐ làm việc khác.</li>
+                                    <li class="pl-1">Các hành vi vi phạm kỷ luật và hình thức xử lý.</li>
+                                    <li class="pl-1">Trách nhiệm vật chất; Người có thẩm quyền xử lý.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div
+                            class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-red-600">
+                            <h4 class="font-bold text-lg mb-3 text-red-700">Nguyên tắc xử lý kỷ luật</h4>
+                            <div class="text-slate-700 text-sm leading-relaxed">
+                                <ul class="space-y-2 ml-4 list-decimal marker:text-blue-500">
+                                    <li class="pl-1">NSDLĐ phải chứng minh được lỗi của NLĐ.</li>
+                                    <li class="pl-1">Phải có sự tham gia của tổ chức đại diện NLĐ.</li>
+                                    <li class="pl-1">NLĐ phải có mặt, có quyền tự bào chữa/nhờ bào chữa.</li>
+                                    <li class="pl-1">Phải lập biên bản.</li>
+                                    <li class="pl-1">Không áp dụng nhiều hình thức kỷ luật cho 1 hành vi.</li>
+                                    <li class="pl-1">Nhiều hành vi cùng lúc => chỉ áp dụng hình thức cao nhất.</li>
+                                    <li class="pl-1">Không xử lý: Đang ốm đau/điều dưỡng, nghỉ thai sản, đang bị tạm
+                                        giữ/tạm giam.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 8. Nguyên tắc trả lương -->
+                    <h3
+                        class="flex items-center gap-2 text-xl font-bold text-slate-800 mt-8 mb-4 border-l-4 border-blue-600 pl-3">
+                        <span class="text-blue-600">
+                            <!-- Wallet Icon -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4" />
+                                <path d="M3 5v14a2 2 0 0 0 2 2h16v-5" />
+                                <path d="M18 12a2 2 0 0 0 0 4h4v-4Z" />
+                            </svg>
+                        </span>
+                        8. Nguyên tắc trả lương
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div
+                            class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-green-600">
+                            <h4 class="font-bold text-lg mb-3 text-green-700">Nguyên tắc chung & Quyền chi tiêu</h4>
+                            <div class="text-slate-700 text-sm leading-relaxed">
+                                <ul class="space-y-2 ml-4 list-disc marker:text-blue-500">
+                                    <li class="pl-1">NSDLĐ trả lương trực tiếp, đầy đủ, đúng hạn.</li>
+                                    <li class="pl-1">Nếu NLĐ không thể nhận trực tiếp: Có thể trả cho người được ủy
+                                        quyền hợp pháp.</li>
+                                    <li class="pl-1">NSDLĐ KHÔNG được hạn chế/can thiệp quyền tự quyết chi tiêu của NLĐ.
+                                    </li>
+                                    <li class="pl-1">KHÔNG được ép buộc mua hàng hóa/dịch vụ của NSDLĐ hoặc đơn vị chỉ
+                                        định.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div
+                            class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-blue-600">
+                            <h4 class="font-bold text-lg mb-3 text-blue-700">Hình thức trả lương</h4>
+                            <div class="text-slate-700 text-sm leading-relaxed">
+                                <ul class="space-y-2 ml-4 list-disc marker:text-blue-500">
+                                    <li class="pl-1">Thỏa thuận: Theo thời gian, sản phẩm hoặc khoán.</li>
+                                    <li class="pl-1">Phương thức: Tiền mặt hoặc chuyển khoản qua tài khoản ngân hàng.
+                                    </li>
+                                    <li class="pl-1">Phí: Nếu trả qua thẻ, NSDLĐ phải trả phí mở tài khoản và phí chuyển
+                                        tiền.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <p className="font-bold text-green-700 mb-1">Nghỉ ngay (Không cần báo trước) nếu:</p>
-                    <ul className="list-disc ml-4 text-sm text-slate-700">
-                        <li>Không được bố trí đúng việc/địa điểm; Không được trả đủ lương/trả chậm.</li>
-                        <li>Bị ngược đãi/quấy rối; Bị cưỡng bức lao động.</li>
-                    </ul>
+
+                <!-- Official Section -->
+                <div id="section-official" class="section p-4 md:p-8 animate-fade-in hidden">
+                    <div class="mb-8 border-b pb-4">
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-blue-900 uppercase tracking-tight">Phần II:
+                            Quản lý Viên chức</h2>
+                        <p class="text-slate-500 mt-2 text-lg">Nghị định 115/2020/NĐ-CP & 85/2023/NĐ-CP</p>
+                    </div>
+
+                    <!-- 1. Hiệu lực -->
+                    <div
+                        class="bg-indigo-50 p-4 rounded-lg mb-8 border border-indigo-100 flex flex-col md:flex-row gap-4 justify-between items-center">
+                        <div>
+                            <h4 class="font-bold text-indigo-900">Hiệu lực thi hành</h4>
+                            <p class="text-2xl font-bold text-indigo-600">29/09/2020</p>
+                        </div>
+                        <div class="text-sm text-indigo-800 md:w-1/2">
+                            <p><b>Phạm vi:</b> Viên chức tại ĐVSNCL (Nhà nước/Đảng/Đoàn thể). Áp dụng cho cả DN có vốn
+                                nhà nước >50%.</p>
+                            <p class="mt-1"><b>Bãi bỏ:</b> NĐ 29/2012/NĐ-CP và Điều 2 NĐ 161/2018/NĐ-CP.</p>
+                        </div>
+                    </div>
+
+                    <!-- 2. Phân loại -->
+                    <h3
+                        class="flex items-center gap-2 text-xl font-bold text-slate-800 mt-8 mb-4 border-l-4 border-blue-600 pl-3">
+                        <span class="text-blue-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                            </svg>
+                        </span>
+                        2. Phân loại viên chức
+                    </h3>
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div
+                            class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-blue-600">
+                            <h4 class="font-bold text-lg mb-3 text-blue-700">Theo chức trách, nhiệm vụ</h4>
+                            <div class="text-slate-700 text-sm leading-relaxed">
+                                <ul class="space-y-2 ml-4 list-disc marker:text-blue-500">
+                                    <li class="pl-1">Viên chức quản lý</li>
+                                    <li class="pl-1">Viên chức không giữ chức vụ quản lý</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div
+                            class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-blue-600">
+                            <h4 class="font-bold text-lg mb-3 text-blue-700">Theo trình độ đào tạo</h4>
+                            <div class="text-slate-700 text-sm leading-relaxed">
+                                <ul class="space-y-2 ml-4 list-disc marker:text-blue-500">
+                                    <li class="pl-1">Tiến sĩ</li>
+                                    <li class="pl-1">Thạc sĩ</li>
+                                    <li class="pl-1">Đại học</li>
+                                    <li class="pl-1">Cao đẳng</li>
+                                    <li class="pl-1">Trung cấp</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Tuyển dụng -->
+                    <h3
+                        class="flex items-center gap-2 text-xl font-bold text-slate-800 mt-8 mb-4 border-l-4 border-blue-600 pl-3">
+                        <span class="text-blue-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <rect width="20" height="14" x="2" y="7" rx="2" ry="2" />
+                                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                            </svg>
+                        </span>
+                        3. Tuyển dụng viên chức
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div
+                                class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-green-600">
+                                <h4 class="font-bold text-lg mb-3 text-green-700">Hình thức & Điều kiện</h4>
+                                <div class="text-slate-700 text-sm leading-relaxed">
+                                    <p class="mb-2"><b>Hình thức:</b> Thi tuyển & Xét tuyển.</p>
+                                    <p class="font-bold mb-1">Điều kiện (Điều 22 Luật Viên chức):</p>
+                                    <ul class="list-disc ml-4 text-sm mb-2 marker:text-blue-500">
+                                        <li class="pl-1">Được bổ sung điều kiện khác (không thấp hơn chuẩn chung, không
+                                            trái luật, không phân biệt loại hình đào tạo).</li>
+                                        <li class="pl-1">VH-NT-TTTT: Có thể dưới 18 tuổi (phải từ đủ 15t, có sự đồng ý
+                                            của người đại diện).</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div
+                                class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-purple-600">
+                                <h4 class="font-bold text-lg mb-3 text-purple-700">Điểm ưu tiên (Cộng vào vòng 2)</h4>
+                                <ul class="space-y-3 text-sm">
+                                    <li class="flex items-start gap-2">
+                                        <span
+                                            class="bg-purple-100 text-purple-700 font-bold px-2 py-1 rounded">+7.5</span>
+                                        <span>Anh hùng LLVT, Anh hùng LĐ, Thương binh (hưởng chính sách như TB), Thương
+                                            binh loại B.</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span
+                                            class="bg-purple-100 text-purple-700 font-bold px-2 py-1 rounded">+5.0</span>
+                                        <span>Dân tộc thiểu số, sĩ quan, quân nhân chuyên nghiệp, người làm cơ yếu, con
+                                            liệt sĩ/thương/bệnh binh...</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span
+                                            class="bg-purple-100 text-purple-700 font-bold px-2 py-1 rounded">+2.5</span>
+                                        <span>Hoàn thành NVQS, công an, thanh niên xung phong...</span>
+                                    </li>
+                                </ul>
+                                <p class="text-xs text-slate-500 mt-2 italic">*Chỉ cộng điểm ưu tiên cao nhất.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Tập sự -->
+                    <h3
+                        class="flex items-center gap-2 text-xl font-bold text-slate-800 mt-8 mb-4 border-l-4 border-blue-600 pl-3">
+                        <span class="text-blue-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                <polyline points="22 4 12 14.01 9 11.01" />
+                            </svg>
+                        </span>
+                        4. Chế độ Tập sự
+                    </h3>
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-slate-200">
+                        <div class="grid md:grid-cols-3 gap-4 mb-6 text-center">
+                            <div class="p-4 bg-blue-50 rounded-lg">
+                                <div class="text-2xl font-bold text-blue-700">12 tháng</div>
+                                <div class="font-medium text-slate-700">Đại học</div>
+                                <div class="text-xs text-blue-600 mt-1">(Bác sĩ: 09 tháng)</div>
+                            </div>
+                            <div class="p-4 bg-teal-50 rounded-lg">
+                                <div class="text-2xl font-bold text-teal-700">09 tháng</div>
+                                <div class="font-medium text-slate-700">Cao đẳng</div>
+                            </div>
+                            <div class="p-4 bg-slate-100 rounded-lg">
+                                <div class="text-2xl font-bold text-slate-700">06 tháng</div>
+                                <div class="font-medium text-slate-700">Trung cấp</div>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h5 class="font-bold text-slate-800 mb-2">Chính sách lương tập sự</h5>
+                                <ul class="space-y-2 text-sm">
+                                    <li class="flex justify-between border-b border-slate-100 pb-1">
+                                        <span>Bình thường</span>
+                                        <span class="font-bold text-blue-600">85% bậc 1</span>
+                                    </li>
+                                    <li class="flex justify-between border-b border-slate-100 pb-1">
+                                        <span>Thạc sĩ</span>
+                                        <span class="font-bold text-blue-600">85% bậc 2</span>
+                                    </li>
+                                    <li class="flex justify-between border-b border-slate-100 pb-1">
+                                        <span>Tiến sĩ</span>
+                                        <span class="font-bold text-blue-600">85% bậc 3</span>
+                                    </li>
+                                    <li class="text-xs text-slate-500 pt-1">*Người hướng dẫn: Phụ cấp trách nhiệm 0.3
+                                    </li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-slate-800 mb-2">Thời gian KHÔNG tính tập sự</h5>
+                                <div class="text-slate-700 text-sm leading-relaxed">
+                                    <ul class="space-y-2 ml-4 list-disc marker:text-blue-500">
+                                        <li class="pl-1">Nghỉ sinh con (BHXH).</li>
+                                        <li class="pl-1">Nghỉ ốm đau ≥ 14 ngày.</li>
+                                        <li class="pl-1">Nghỉ không lương; Tạm giam/giữ/đình chỉ.</li>
+                                        <li class="pl-1">(Nghỉ ốm &lt;14 ngày có lý do chính đáng được tính).</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5. Hợp đồng làm việc -->
+                    <h3
+                        class="flex items-center gap-2 text-xl font-bold text-slate-800 mt-8 mb-4 border-l-4 border-blue-600 pl-3">
+                        <span class="text-blue-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                                <polyline points="14 2 14 8 20 8" />
+                                <line x1="16" x2="8" y1="13" y2="13" />
+                                <line x1="16" x2="8" y1="17" y2="17" />
+                                <line x1="10" x2="8" y1="9" y2="9" />
+                            </svg>
+                        </span>
+                        5. Hợp đồng làm việc
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div
+                            class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-orange-600">
+                            <h4 class="font-bold text-lg mb-3 text-orange-700">Các loại hợp đồng</h4>
+                            <div class="text-slate-700 text-sm leading-relaxed">
+                                <ul class="list-decimal ml-4 space-y-2 marker:text-blue-500">
+                                    <li><span class="font-bold">Xác định thời hạn:</span> Từ 12 đến 60 tháng.</li>
+                                    <li><span class="font-bold">Không xác định thời hạn:</span>
+                                        <ul class="list-disc ml-4 text-sm mt-1 text-slate-600">
+                                            <li>Viên chức tuyển trước 01/7/2020.</li>
+                                            <li>Sau khi hết HĐ xác định thời hạn thì chuyển sang không XĐTH.</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div
+                            class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-slate-600">
+                            <h4 class="font-bold text-lg mb-3 text-slate-700">Ký kết & Thực hiện</h4>
+                            <div class="text-slate-700 text-sm leading-relaxed">
+                                <ul class="space-y-2 ml-4 list-disc marker:text-blue-500">
+                                    <li class="pl-1">Ký văn bản giữa Viên chức & Người đứng đầu ĐVSNCL.</li>
+                                    <li class="pl-1">Thay đổi nội dung: Ký phụ lục hoặc HĐ mới.</li>
+                                    <li class="pl-1">Chuyển đơn vị: Không tuyển mới, không giải quyết thôi việc, ký HĐ
+                                        mới.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 6. Bổ nhiệm -->
+                    <h3
+                        class="flex items-center gap-2 text-xl font-bold text-slate-800 mt-8 mb-4 border-l-4 border-blue-600 pl-3">
+                        <span class="text-blue-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <circle cx="12" cy="8" r="7" />
+                                <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
+                            </svg>
+                        </span>
+                        6. Bổ nhiệm viên chức quản lý
+                    </h3>
+                    <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-blue-600">
+                        <h4 class="font-bold text-lg mb-3 text-blue-700">Tiêu chuẩn & Điều kiện (NĐ 85/2023 sửa đổi)
+                        </h4>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="text-slate-700 text-sm leading-relaxed">
+                                <ul class="space-y-2 ml-4 list-disc marker:text-blue-500">
+                                    <li class="pl-1">Đạt tiêu chuẩn chung & cụ thể.</li>
+                                    <li class="pl-1">Nhân sự tại chỗ/nơi khác: Phải trong quy hoạch chức vụ tương đương
+                                        trở lên.</li>
+                                    <li class="pl-1">Kinh nghiệm: Giữ chức vụ tương đương tối thiểu 02 năm (trừ bổ nhiệm
+                                        lần đầu).</li>
+                                    <li class="pl-1">Tuổi: Đủ tuổi công tác trọn nhiệm kỳ.</li>
+                                </ul>
+                            </div>
+                            <div class="text-slate-700 text-sm leading-relaxed">
+                                <ul class="space-y-2 ml-4 list-disc marker:text-blue-500">
+                                    <li class="pl-1">Sức khỏe, lý lịch rõ ràng, kê khai tài sản.</li>
+                                    <li class="pl-1">Không bị cấm, không trong thời gian thi hành kỷ luật.</li>
+                                    <li class="pl-1">Bị kỷ luật trong thời gian giữ chức -> Không bổ nhiệm cao hơn.</li>
+                                    <li class="pl-1">Thời hạn: 05 năm/lần. Bổ nhiệm lại không hạn chế số lần.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-slate-100">
+                            <p class="font-bold mb-1 text-sm">Trách nhiệm & Thẩm quyền:</p>
+                            <div class="flex flex-wrap gap-2 text-xs">
+                                <span class="bg-blue-50 px-2 py-1 rounded">Người đứng đầu: Quyết định/Đề nghị</span>
+                                <span class="bg-blue-50 px-2 py-1 rounded">Bộ phận tham mưu: Thẩm định</span>
+                                <span class="bg-blue-50 px-2 py-1 rounded">Viên chức: Kê khai hồ sơ</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Medical Section -->
+                <div id="section-medical" class="section p-4 md:p-8 animate-fade-in hidden">
+                    <div class="mb-8 border-b pb-4">
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-blue-900 uppercase tracking-tight">Phần III:
+                            Vị trí việc làm & Phân hạng Đơn vị Y tế</h2>
+                        <p class="text-slate-500 mt-2 text-lg">Thông tư 03/2023 & 06/2024/TT-BYT</p>
+                    </div>
+
+                    <!-- 1. Phân hạng -->
+                    <h3
+                        class="flex items-center gap-2 text-xl font-bold text-slate-800 mt-8 mb-4 border-l-4 border-blue-600 pl-3">
+                        <span class="text-blue-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z" />
+                                <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" />
+                                <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2" />
+                                <path d="M10 6h4" />
+                                <path d="M10 10h4" />
+                                <path d="M10 14h4" />
+                                <path d="M10 18h4" />
+                            </svg>
+                        </span>
+                        1. Phân hạng đơn vị sự nghiệp y tế (TT 06/2024)
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="flex flex-col md:flex-row gap-4">
+                            <div class="flex-1 bg-white p-4 rounded shadow-sm border border-slate-200">
+                                <h5 class="font-bold text-blue-900 border-b pb-2 mb-2">Hệ thống phân hạng</h5>
+                                <p class="mb-2 text-sm"><span class="font-bold">Cơ sở KCB:</span> Hạng Đặc biệt, I, II,
+                                    III.</p>
+                                <p class="text-sm"><span class="font-bold">Y tế dự phòng/TTYT...:</span> Hạng I, II,
+                                    III, IV.</p>
+                                <p class="text-xs text-slate-500 mt-2">*Hạng Đặc biệt: Bộ Nội vụ quyết định.</p>
+                            </div>
+                            <div class="flex-[2] bg-white p-4 rounded shadow-sm border border-slate-200">
+                                <h5 class="font-bold text-blue-900 border-b pb-2 mb-2">Tiêu chuẩn xếp hạng (Thang 100
+                                    điểm)</h5>
+                                <div class="space-y-3">
+                                    <div>
+                                        <div class="flex justify-between text-sm mb-1">
+                                            <span>Chuyên môn (Nhóm IV) - <i class="text-xs">Quan trọng nhất</i></span>
+                                            <span class="font-bold">40 điểm</span>
+                                        </div>
+                                        <div class="w-full bg-slate-100 h-2 rounded-full">
+                                            <div class="bg-red-500 h-2 rounded-full" style="width: 40%"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between text-sm mb-1">
+                                            <span>Nhân lực (Nhóm III)</span>
+                                            <span class="font-bold">20 điểm</span>
+                                        </div>
+                                        <div class="w-full bg-slate-100 h-2 rounded-full">
+                                            <div class="bg-blue-500 h-2 rounded-full" style="width: 20%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-3 gap-2 text-xs text-slate-600 mt-2">
+                                        <div class="bg-slate-50 p-2 rounded text-center">
+                                            <div class="font-bold">15 điểm</div>Quy mô (II)
+                                        </div>
+                                        <div class="bg-slate-50 p-2 rounded text-center">
+                                            <div class="font-bold">15 điểm</div>Hạ tầng (V)
+                                        </div>
+                                        <div class="bg-slate-50 p-2 rounded text-center">
+                                            <div class="font-bold">10 điểm</div>Vị trí (I)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Vị trí việc làm -->
+                    <h3
+                        class="flex items-center gap-2 text-xl font-bold text-slate-800 mt-8 mb-4 border-l-4 border-blue-600 pl-3">
+                        <span class="text-blue-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <rect width="20" height="14" x="2" y="7" rx="2" ry="2" />
+                                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                            </svg>
+                        </span>
+                        2. Vị trí việc làm (NĐ 106 & TT 03)
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div
+                            class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-purple-600">
+                            <h4 class="font-bold text-lg mb-3 text-purple-700">Căn cứ xác định</h4>
+                            <ul class="space-y-2 text-sm marker:text-blue-500 list-disc ml-4">
+                                <li class="pl-1"><span class="font-bold">Vị trí việc làm:</span> Chức năng, nhiệm vụ, cơ
+                                    cấu, mức độ phức tạp.</li>
+                                <li class="pl-1"><span class="font-bold">Số lượng người:</span> VTVL, khối lượng việc,
+                                    mức độ hiện đại hóa.</li>
+                                <li class="pl-1"><span class="font-bold">Cơ cấu viên chức:</span> Danh mục VTVL, tiêu
+                                    chuẩn chức danh.</li>
+                            </ul>
+                        </div>
+                        <div
+                            class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-purple-600">
+                            <h4 class="font-bold text-lg mb-3 text-purple-700">Phân loại & Ví dụ</h4>
+                            <ul class="list-decimal ml-4 space-y-1 text-sm marker:text-blue-500">
+                                <li class="pl-1"><span class="font-bold">Lãnh đạo, quản lý:</span> Giám đốc, Trưởng
+                                    khoa...</li>
+                                <li class="pl-1"><span class="font-bold">Chức danh nghề nghiệp chuyên ngành:</span> Bác
+                                    sĩ...</li>
+                                <li class="pl-1"><span class="font-bold">CDNN chuyên môn dùng chung:</span> Chuyên viên
+                                    TCCB...</li>
+                                <li class="pl-1"><span class="font-bold">Hỗ trợ, phục vụ:</span> Lái xe...</li>
+                            </ul>
+                            <p class="text-xs mt-2 bg-purple-50 p-2 rounded">
+                                <b>Vị trí quản lý BV:</b> UV HĐ Quản lý, UV Kiểm soát, Trưởng khoa, ĐD trưởng, KTY
+                                trưởng.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 3. Phụ cấp -->
+                    <h3
+                        class="flex items-center gap-2 text-xl font-bold text-slate-800 mt-8 mb-4 border-l-4 border-blue-600 pl-3">
+                        <span class="text-blue-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <line x1="19" y1="5" x2="5" y2="19" />
+                                <circle cx="6.5" cy="6.5" r="2.5" />
+                                <circle cx="17.5" cy="17.5" r="2.5" />
+                            </svg>
+                        </span>
+                        3. Chế độ Phụ cấp (Tại Bệnh viện Hạng I)
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="border rounded-lg overflow-hidden">
+                            <table class="w-full text-sm">
+                                <thead class="bg-green-50 text-green-800">
+                                    <tr>
+                                        <th class="p-3 text-left">Chức vụ</th>
+                                        <th class="p-3 text-center">Hệ số</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 bg-white">
+                                    <tr>
+                                        <td class="p-3">Giám đốc bệnh viện</td>
+                                        <td class="p-3 text-center font-bold">1.0</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3">Phó Giám đốc</td>
+                                        <td class="p-3 text-center font-bold">0.8</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3">Trưởng khoa/phòng</td>
+                                        <td class="p-3 text-center font-bold">0.6</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3">Phó khoa, ĐD trưởng, KTY trưởng</td>
+                                        <td class="p-3 text-center font-bold">0.5</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                            <h4 class="font-bold text-yellow-800 mb-2">Phụ cấp thâm niên vượt khung</h4>
+                            <ul class="list-disc ml-4 space-y-2 text-sm text-yellow-900 marker:text-yellow-600">
+                                <li class="pl-1">
+                                    <span class="font-bold">Điều kiện:</span> Sau 36 tháng (ngạch A0-A3) hoặc 24 tháng
+                                    (B,C) ở bậc lương cuối cùng.
+                                </li>
+                                <li class="pl-1">
+                                    <span class="font-bold">Mức hưởng:</span>
+                                    <span class="block mt-1 font-bold text-xl">5% <span class="text-sm font-normal">năm
+                                            đầu</span></span>
+                                    <span class="block">+1% <span class="text-sm font-normal">các năm tiếp
+                                            theo</span></span>
+                                </li>
+                            </ul>
+                            <div class="mt-3 bg-white p-2 rounded text-xs border border-yellow-100">
+                                <b>Ví dụ (A1, hệ số 4.98):</b><br />
+                                5% x (2.340.000 x 4.98) = 585.660 đ
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Chế độ thường trực -->
+                    <h3
+                        class="flex items-center gap-2 text-xl font-bold text-slate-800 mt-8 mb-4 border-l-4 border-blue-600 pl-3">
+                        <span class="text-blue-600">
+                            <!-- Clock Icon -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                        </span>
+                        4. Chế độ thường trực 24/24
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div
+                                class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-blue-600">
+                                <h4 class="font-bold text-lg mb-3 text-blue-700">Mức phụ cấp (24/24 giờ)</h4>
+                                <div class="text-slate-700 text-sm leading-relaxed">
+                                    <ul class="space-y-2">
+                                        <li class="flex justify-between border-b pb-1">
+                                            <span>BV Hạng I, Đặc biệt</span>
+                                            <span class="font-bold text-blue-700">115.000 đ</span>
+                                        </li>
+                                        <li class="flex justify-between border-b pb-1">
+                                            <span>BV Hạng II</span>
+                                            <span class="font-bold text-blue-700">90.000 đ</span>
+                                        </li>
+                                        <li class="flex justify-between border-b pb-1">
+                                            <span>BV còn lại</span>
+                                            <span class="font-bold text-blue-700">65.000 đ</span>
+                                        </li>
+                                        <li class="flex justify-between">
+                                            <span>Trạm y tế xã</span>
+                                            <span class="font-bold text-blue-700">25.000 đ</span>
+                                        </li>
+                                    </ul>
+                                    <div class="mt-3 bg-blue-50 p-2 rounded text-xs">
+                                        <p><b>Theo ca:</b> 12h = 0.5x; 16h = 0.75x</p>
+                                        <p class="mt-1"><b>Hỗ trợ tiền ăn:</b> 15.000 đ/người/phiên (24h)</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div
+                                class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-green-600">
+                                <h4 class="font-bold text-lg mb-3 text-green-700">Hệ số điều chỉnh & Nghỉ bù</h4>
+                                <div class="text-slate-700 text-sm leading-relaxed">
+                                    <div class="mb-3">
+                                        <p class="font-bold text-sm mb-1 text-green-800">Hệ số tăng thêm:</p>
+                                        <div class="grid grid-cols-3 gap-1 text-center text-xs">
+                                            <div class="bg-green-50 p-1 rounded border border-green-100">
+                                                <b>1.5 lần</b><br />Hồi sức/CSĐB
+                                            </div>
+                                            <div class="bg-green-50 p-1 rounded border border-green-100">
+                                                <b>1.3 lần</b><br />Ngày nghỉ tuần
+                                            </div>
+                                            <div class="bg-green-50 p-1 rounded border border-green-100">
+                                                <b>1.8 lần</b><br />Lễ, Tết
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-sm mb-1 text-green-800">Chế độ nghỉ bù (sau trực 24h):
+                                        </p>
+                                        <ul class="text-sm list-disc ml-4 space-y-1 marker:text-blue-500">
+                                            <li class="pl-1">Ngày thường/Nghỉ tuần: Nghỉ <b>01 ngày</b>.</li>
+                                            <li class="pl-1">Lễ, Tết: Nghỉ <b>02 ngày</b>.</li>
+                                            <li class="pl-1">Trực ca 12h/16h: Nghỉ ít nhất <b>12h</b> tiếp theo.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-orange-50 p-3 rounded border border-orange-200 text-sm flex items-start gap-2">
+                            <!-- AlertTriangle Icon small -->
+                            <span class="text-orange-600 mt-1 shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path
+                                        d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                                    <line x1="12" y1="9" x2="12" y2="13" />
+                                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                                </svg>
+                            </span>
+                            <div>
+                                <b>Lưu ý:</b> Nếu huy động làm việc vào giờ nghỉ bù hoặc làm thêm giờ -> Trả lương làm
+                                thêm giờ. Làm đêm -> Trả lương làm đêm.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Section -->
+                <div id="section-admin" class="section p-4 md:p-8 animate-fade-in hidden">
+                    <div class="mb-8 border-b pb-4">
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-blue-900 uppercase tracking-tight">Phần VI:
+                            Văn bản Hành chính</h2>
+                        <p class="text-slate-500 mt-2 text-lg">Quy định về thể thức và kỹ thuật trình bày</p>
+                    </div>
+
+                    <!-- 1. Các loại văn bản -->
+                    <h3
+                        class="flex items-center gap-2 text-xl font-bold text-slate-800 mt-8 mb-4 border-l-4 border-blue-600 pl-3">
+                        <span class="text-blue-600">
+                            <!-- FileText Icon -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                                <polyline points="14 2 14 8 20 8" />
+                                <line x1="16" x2="8" y1="13" y2="13" />
+                                <line x1="16" x2="8" y1="17" y2="17" />
+                                <line x1="10" x2="8" y1="9" y2="9" />
+                            </svg>
+                        </span>
+                        1. Các loại văn bản hành chính (Điều 7)
+                    </h3>
+                    <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-blue-600">
+                        <h4 class="font-bold text-lg mb-3 text-blue-700">Danh mục các loại văn bản</h4>
+                        <div class="text-slate-700 text-sm leading-relaxed">
+                            <div class="flex flex-wrap gap-2">
+                                <span
+                                    class="bg-blue-50 text-blue-800 px-2 py-1 rounded text-sm border border-blue-100">Nghị
+                                    quyết (cá biệt)</span>
+                                <span
+                                    class="bg-blue-50 text-blue-800 px-2 py-1 rounded text-sm border border-blue-100">Quyết
+                                    định (cá biệt)</span>
+                                <span
+                                    class="bg-blue-50 text-blue-800 px-2 py-1 rounded text-sm border border-blue-100">Chỉ
+                                    thị</span>
+                                <span
+                                    class="bg-blue-50 text-blue-800 px-2 py-1 rounded text-sm border border-blue-100">Quy
+                                    chế</span>
+                                <span
+                                    class="bg-blue-50 text-blue-800 px-2 py-1 rounded text-sm border border-blue-100">Quy
+                                    định</span>
+                                <span
+                                    class="bg-blue-50 text-blue-800 px-2 py-1 rounded text-sm border border-blue-100">Thông
+                                    cáo</span>
+                                <span
+                                    class="bg-blue-50 text-blue-800 px-2 py-1 rounded text-sm border border-blue-100">Thông
+                                    báo</span>
+                                <span
+                                    class="bg-blue-50 text-blue-800 px-2 py-1 rounded text-sm border border-blue-100">Hướng
+                                    dẫn</span>
+                                <span
+                                    class="bg-blue-50 text-blue-800 px-2 py-1 rounded text-sm border border-blue-100">Chương
+                                    trình</span>
+                                <span
+                                    class="bg-blue-50 text-blue-800 px-2 py-1 rounded text-sm border border-blue-100">Kế
+                                    hoạch</span>
+                                <span
+                                    class="bg-blue-50 text-blue-800 px-2 py-1 rounded text-sm border border-blue-100">Phương
+                                    án</span>
+                                <span
+                                    class="bg-blue-50 text-blue-800 px-2 py-1 rounded text-sm border border-blue-100">Đề
+                                    án</span>
+                                <span
+                                    class="bg-blue-50 text-blue-800 px-2 py-1 rounded text-sm border border-blue-100">Dự
+                                    án</span>
+                                <span
+                                    class="bg-blue-50 text-blue-800 px-2 py-1 rounded text-sm border border-blue-100">Báo
+                                    cáo</span>
+                                <span
+                                    class="bg-blue-50 text-blue-800 px-2 py-1 rounded text-sm border border-blue-100">Biên
+                                    bản</span>
+                                <span
+                                    class="bg-blue-50 text-blue-800 px-2 py-1 rounded text-sm border border-blue-100">Tờ
+                                    trình</span>
+                                <span
+                                    class="bg-blue-50 text-blue-800 px-2 py-1 rounded text-sm border border-blue-100">Hợp
+                                    đồng</span>
+                                <span
+                                    class="bg-blue-50 text-blue-800 px-2 py-1 rounded text-sm border border-blue-100">Công
+                                    văn</span>
+                                <span
+                                    class="bg-blue-50 text-blue-800 px-2 py-1 rounded text-sm border border-blue-100">Công
+                                    điện</span>
+                                <span
+                                    class="bg-blue-50 text-blue-800 px-2 py-1 rounded text-sm border border-blue-100">Bản
+                                    ghi nhớ</span>
+                                <span
+                                    class="bg-blue-50 text-blue-800 px-2 py-1 rounded text-sm border border-blue-100">Bản
+                                    thỏa thuận</span>
+                                <span
+                                    class="bg-blue-50 text-blue-800 px-2 py-1 rounded text-sm border border-blue-100">Giấy
+                                    ủy quyền</span>
+                                <span
+                                    class="bg-blue-50 text-blue-800 px-2 py-1 rounded text-sm border border-blue-100">Giấy
+                                    mời</span>
+                                <span
+                                    class="bg-blue-50 text-blue-800 px-2 py-1 rounded text-sm border border-blue-100">Giấy
+                                    giới thiệu</span>
+                                <span
+                                    class="bg-blue-50 text-blue-800 px-2 py-1 rounded text-sm border border-blue-100">Giấy
+                                    nghỉ phép</span>
+                                <span
+                                    class="bg-blue-50 text-blue-800 px-2 py-1 rounded text-sm border border-blue-100">Phiếu
+                                    gửi</span>
+                                <span
+                                    class="bg-blue-50 text-blue-800 px-2 py-1 rounded text-sm border border-blue-100">Phiếu
+                                    chuyển</span>
+                                <span
+                                    class="bg-blue-50 text-blue-800 px-2 py-1 rounded text-sm border border-blue-100">Phiếu
+                                    báo</span>
+                                <span
+                                    class="bg-blue-50 text-blue-800 px-2 py-1 rounded text-sm border border-blue-100">Thư
+                                    công</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Thể thức -->
+                    <h3
+                        class="flex items-center gap-2 text-xl font-bold text-slate-800 mt-8 mb-4 border-l-4 border-blue-600 pl-3">
+                        <span class="text-blue-600">
+                            <!-- BookOpen Icon -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                            </svg>
+                        </span>
+                        2. Thể thức văn bản (Điều 8)
+                    </h3>
+                    <div class="space-y-6">
+                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                            <h4 class="font-bold text-slate-800 mb-2">Định nghĩa</h4>
+                            <p class="text-sm text-slate-600">
+                                Thể thức văn bản là tập hợp các thành phần cấu thành văn bản, bao gồm những thành phần
+                                chính áp dụng đối với tất cả các loại văn bản và các thành phần bổ sung trong những
+                                trường hợp cụ thể hoặc đối với một số loại văn bản nhất định.
+                            </p>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div
+                                class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-green-600">
+                                <h4 class="font-bold text-lg mb-3 text-green-700">Thành phần CHÍNH</h4>
+                                <div class="text-slate-700 text-sm leading-relaxed">
+                                    <ul class="space-y-2 ml-4 list-decimal marker:text-blue-500">
+                                        <li class="pl-1">Quốc hiệu và Tiêu ngữ.</li>
+                                        <li class="pl-1">Tên cơ quan, tổ chức ban hành văn bản.</li>
+                                        <li class="pl-1">Số, ký hiệu của văn bản.</li>
+                                        <li class="pl-1">Địa danh và thời gian ban hành văn bản.</li>
+                                        <li class="pl-1">Tên loại và trích yếu nội dung văn bản.</li>
+                                        <li class="pl-1">Nội dung văn bản.</li>
+                                        <li class="pl-1">Chức vụ, họ tên và chữ ký của người có thẩm quyền.</li>
+                                        <li class="pl-1">Dấu, chữ ký số của cơ quan, tổ chức.</li>
+                                        <li class="pl-1">Nơi nhận.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div
+                                class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-orange-600">
+                                <h4 class="font-bold text-lg mb-3 text-orange-700">Thành phần BỔ SUNG</h4>
+                                <div class="text-slate-700 text-sm leading-relaxed">
+                                    <ul class="space-y-2 ml-4 list-decimal marker:text-blue-500">
+                                        <li class="pl-1">Phụ lục.</li>
+                                        <li class="pl-1">Dấu chỉ độ mật, mức độ khẩn, các chỉ dẫn về phạm vi lưu hành.
+                                        </li>
+                                        <li class="pl-1">Ký hiệu người soạn thảo văn bản và số lượng bản phát hành.</li>
+                                        <li class="pl-1">Địa chỉ cơ quan, tổ chức; thư điện tử; trang thông tin điện tử;
+                                            số điện thoại; số Fax.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reward Section -->
+                <div id="section-reward" class="section p-4 md:p-8 animate-fade-in hidden">
+                    <div class="mb-8 border-b pb-4">
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-blue-900 uppercase tracking-tight">Phần IV:
+                            Luật Thi Đua, Khen Thưởng</h2>
+                        <p class="text-slate-500 mt-2 text-lg">Năm 2022</p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div
+                            class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-blue-600">
+                            <h4 class="font-bold text-lg mb-3 text-blue-700">1. Mục tiêu</h4>
+                            <ul class="list-disc ml-4 space-y-2 text-sm text-slate-700 marker:text-blue-500">
+                                <li class="pl-1"><b>Thi đua:</b> Động viên cá nhân/tập thể phát huy truyền thống, đoàn
+                                    kết, sáng tạo, hoàn thành nhiệm vụ...</li>
+                                <li class="pl-1"><b>Khen thưởng:</b> Khuyến khích, động viên; ghi nhận công lao, thành
+                                    tích cá nhân/tập thể/hộ gia đình.</li>
+                            </ul>
+                        </div>
+                        <div
+                            class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-orange-600">
+                            <h4 class="font-bold text-lg mb-3 text-orange-700">2. Nguyên tắc</h4>
+                            <div class="space-y-3 text-sm text-slate-700">
+                                <div>
+                                    <span class="font-bold text-orange-700 block mb-1">Thi đua:</span>
+                                    Tự nguyện, tự giác; Công bằng; Công khai; Đoàn kết; Cùng phát triển.
+                                </div>
+                                <div>
+                                    <span class="font-bold text-orange-700 block mb-1">Khen thưởng:</span>
+                                    <ul class="space-y-2 ml-4 list-disc marker:text-blue-500">
+                                        <li class="pl-1">Chính xác, công khai, công bằng, kịp thời.</li>
+                                        <li class="pl-1">Thống nhất hình thức với thành tích.</li>
+                                        <li class="pl-1">Một hình thức tặng nhiều lần / Không tặng nhiều hình thức cho 1
+                                            thành tích.</li>
+                                        <li class="pl-1">Thành tích đến đâu khen đến đó.</li>
+                                        <li class="pl-1">Chú trọng lao động trực tiếp, vùng khó khăn.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3
+                        class="flex items-center gap-2 text-xl font-bold text-slate-800 mt-8 mb-4 border-l-4 border-blue-600 pl-3">
+                        <span class="text-blue-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <circle cx="12" cy="8" r="7" />
+                                <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
+                            </svg>
+                        </span>
+                        3. Danh hiệu & Hình thức khen thưởng
+                    </h3>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div
+                            class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-green-600">
+                            <h4 class="font-bold text-lg mb-3 text-green-700">Danh hiệu thi đua</h4>
+                            <div class="flex flex-col gap-2 text-sm">
+                                <span class="bg-green-50 p-2 rounded text-center text-green-800">Cá nhân</span>
+                                <span class="bg-green-50 p-2 rounded text-center text-green-800">Tập thể</span>
+                                <span class="bg-green-50 p-2 rounded text-center text-green-800">Hộ gia đình</span>
+                            </div>
+                        </div>
+                        <div
+                            class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-purple-600">
+                            <h4 class="font-bold text-lg mb-3 text-purple-700">Loại hình khen thưởng</h4>
+                            <ul class="text-sm space-y-1 text-slate-700">
+                                <li>• Công trạng</li>
+                                <li>• Đột xuất</li>
+                                <li>• Phong trào thi đua</li>
+                                <li>• Quá trình cống hiến</li>
+                                <li>• Theo niên hạn</li>
+                                <li>• Đối ngoại</li>
+                            </ul>
+                        </div>
+                        <div
+                            class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-red-600">
+                            <h4 class="font-bold text-lg mb-3 text-red-700">Hình thức khen thưởng</h4>
+                            <ul class="text-sm space-y-1 text-slate-700">
+                                <li>• Huân chương</li>
+                                <li>• Huy chương</li>
+                                <li>• Danh hiệu vinh dự NN</li>
+                                <li>• Giải thưởng HCM/NN</li>
+                                <li>• Kỷ niệm chương</li>
+                                <li>• Bằng khen / Giấy khen</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p class="mt-4 text-center text-sm text-slate-500">
+                        <b>Căn cứ xét:</b> Thành tích đạt được; Tiêu chuẩn; Điều kiện & hoàn cảnh.
+                    </p>
+                </div>
+
+                <!-- Hospital Section -->
+                <div id="section-hospital" class="section p-4 md:p-8 animate-fade-in hidden">
+                    <div class="mb-8 border-b pb-4">
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-blue-900 uppercase tracking-tight">Phần V:
+                            Bệnh Viện Nhi Đồng Thành Phố</h2>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-gradient-to-br from-blue-500 to-blue-700 text-white p-6 rounded-xl shadow-lg">
+                            <h3 class="text-xl font-bold mb-4 border-b border-blue-400 pb-2">Thông tin Đơn vị</h3>
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center">
+                                    <span>Phân hạng</span>
+                                    <span class="font-bold text-xl">Hạng 1</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span>Loại hình</span>
+                                    <span class="font-medium">Đơn vị sự nghiệp công lập</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span>Áp dụng NĐ 115</span>
+                                    <span class="font-bold">Có</span>
+                                </div>
+                                <div class="pt-2">
+                                    <p class="text-blue-200 text-sm">Giám đốc</p>
+                                    <p class="font-bold text-lg">Ông Trương Quang Định</p>
+                                </div>
+                                <div>
+                                    <p class="text-blue-200 text-sm">Bộ trưởng Bộ Y tế</p>
+                                    <p class="font-bold text-lg">Bà Đào Hồng Lan</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col gap-4">
+                            <div
+                                class="bg-white p-6 rounded-xl shadow-md border-l-8 border-cyan-500 flex-1 flex flex-col justify-center items-center text-center">
+                                <h4 class="text-slate-500 uppercase tracking-widest text-sm mb-2">Giá Trị Cốt Lõi</h4>
+                                <div class="text-2xl font-bold text-cyan-700 space-y-1 md:space-y-0">
+                                    "Tận tâm - Năng động <br class="md:hidden" /> - Hợp tác - Công bằng"
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3
+                        class="flex items-center gap-2 text-xl font-bold text-slate-800 mt-8 mb-4 border-l-4 border-blue-600 pl-3">
+                        <span class="text-blue-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                                <line x1="12" y1="9" x2="12" y2="13" />
+                                <line x1="12" y1="17" x2="12.01" y2="17" />
+                            </svg>
+                        </span>
+                        Xử lý tình huống thường gặp
+                    </h3>
+                    <div class="space-y-4">
+                        <div
+                            class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-orange-600">
+                            <h4 class="font-bold text-lg mb-3 text-orange-700">1. Bảo mật thông tin (Đồng nghiệp hỏi
+                                lương/kỷ luật/bổ nhiệm)</h4>
+                            <ul class="list-disc ml-4 space-y-1 text-sm text-slate-700 marker:text-blue-500">
+                                <li class="pl-1">Giải thích về nguyên tắc bảo mật và đạo đức nghề nghiệp.</li>
+                                <li class="pl-1">Giải thích việc tiết lộ sớm có thể làm sai lệch quy trình.</li>
+                                <li class="pl-1">Đề nghị đợi thông báo chính thức để đảm bảo xác thực và công bằng.</li>
+                            </ul>
+                        </div>
+                        <div
+                            class="bg-white rounded-lg shadow-sm border border-slate-200 p-5 border-t-4 border-t-red-600">
+                            <h4 class="font-bold text-lg mb-3 text-red-700">2. Điều dưỡng viên muốn nghỉ việc (HĐVB 24
+                                tháng)</h4>
+                            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <p class="font-bold text-red-700 mb-1">Quy định chung:</p>
+                                    <p>Phải báo trước ít nhất <b>30 ngày</b>.</p>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-green-700 mb-1">Nghỉ ngay (Không cần báo trước) nếu:</p>
+                                    <ul class="list-disc ml-4 text-slate-700 marker:text-blue-500">
+                                        <li class="pl-1">Không được bố trí đúng việc/địa điểm; Không được trả đủ
+                                            lương/trả chậm.</li>
+                                        <li class="pl-1">Bị ngược đãi/quấy rối; Bị cưỡng bức lao động.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mindmap Section -->
+
+
+                <!-- Test Section -->
+                <div id="section-test" class="section p-4 md:p-8 animate-fade-in hidden">
+                    <div class="mb-8 border-b pb-4">
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-blue-900 uppercase tracking-tight">Khu vực
+                            Kiểm tra Kiến thức</h2>
+                        <p class="text-slate-500 mt-2 text-lg">Ôn tập ngẫu nhiên qua các câu hỏi trắc nghiệm</p>
+                    </div>
+
+                    <!-- Start Screen -->
+                    <div id="quiz-start"
+                        class="text-center py-12 bg-white rounded-xl shadow-sm border border-slate-200">
+                        <div class="mb-6 flex justify-center text-blue-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                <polyline points="22 4 12 14.01 9 11.01" />
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-slate-800 mb-2">Sẵn sàng kiểm tra?</h3>
+                        <p class="text-slate-600 mb-8 max-w-md mx-auto">Hệ thống sẽ chọn ngẫu nhiên các câu hỏi từ nội
+                            dung ôn tập. Mỗi lần kiểm tra sẽ khác nhau để giúp bạn nhớ bài lâu hơn.</p>
+                        <button onclick="startQuiz()"
+                            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-transform transform hover:scale-105 active:scale-95">
+                            Bắt đầu làm bài
+                        </button>
+                    </div>
+
+                    <!-- Question View -->
+                    <div id="quiz-question-view" class="hidden max-w-2xl mx-auto">
+                        <div class="flex justify-between items-center mb-6 text-sm font-bold text-slate-500">
+                            <span id="quiz-progress">Câu 1/15</span>
+                            <span id="quiz-score" class="text-blue-600">Điểm: 0</span>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                            <div class="p-6 md:p-8 bg-slate-50 border-b border-slate-200">
+                                <h4 id="quiz-question-text"
+                                    class="text-lg md:text-xl font-bold text-slate-800 leading-relaxed">
+                                    Câu hỏi sẽ hiện ở đây...
+                                </h4>
+                            </div>
+                            <div class="p-6 md:p-8">
+                                <div id="quiz-options" class="space-y-3">
+                                    <!-- Options will be injected here -->
+                                </div>
+                            </div>
+
+                            <!-- Feedback Area -->
+                            <div id="quiz-feedback" class="hidden p-6 border-t border-slate-100 bg-slate-50">
+                                <div id="feedback-message" class="font-bold mb-2"></div>
+                                <div id="feedback-explanation" class="text-sm text-slate-600"></div>
+                                <button onclick="nextQuestion()"
+                                    class="mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-700 transition-colors w-full md:w-auto">
+                                    Câu tiếp theo
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Result View -->
+                    <div id="quiz-result"
+                        class="hidden text-center py-12 bg-white rounded-xl shadow-sm border border-slate-200">
+                        <div class="mb-6 flex justify-center">
+                            <div id="result-icon-container" class="relative">
+                                <!-- Icon injected via JS -->
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-bold text-slate-800 mb-2">Kết quả kiểm tra</h3>
+                        <div class="text-4xl font-extrabold text-blue-600 mb-4" id="final-score">0/0</div>
+                        <p id="result-message" class="text-slate-600 mb-8 font-medium">Bạn đã hoàn thành bài kiểm tra!
+                        </p>
+                        <button onclick="restartQuiz()"
+                            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-transform transform hover:scale-105 active:scale-95">
+                            Làm lại bài mới
+                        </button>
+                    </div>
                 </div>
             </div>
-        </Card>
-    </div>
-</SectionContainer>
-);
-};
 
-export default ReviewInfographic;
+            <div class="text-center mt-12 text-slate-500 text-sm pb-8">
+                Nội dung được tổng hợp đầy đủ từ đề cương ôn tập.
+            </div>
+        </div>
+
+        <script>
+            // --- DATA FOR MINDMAP ---
+
+
+
+            // --- QUIZ DATA ---
+            const QUIZ_SOURCE = [
+                // I. Labor Law
+                {
+                    question: "Điều kiện nghỉ hưu đối với nam vào năm 2026 là bao nhiêu tuổi?",
+                    options: ["61 tuổi 6 tháng", "62 tuổi", "61 tuổi 3 tháng", "60 tuổi"],
+                    correct: 0,
+                    explanation: "Lộ trình tăng tuổi nghỉ hưu của nam đến năm 2026 là 61 tuổi 6 tháng (tăng 3 tháng/năm)."
+                },
+                {
+                    question: "Tiền lương làm thêm giờ vào 'Ngày nghỉ hằng tuần' là bao nhiêu?",
+                    options: ["Ít nhất 200%", "Ít nhất 150%", "Ít nhất 300%", "Ít nhất 100%"],
+                    correct: 0,
+                    explanation: "Ngày thường: 150%; Ngày nghỉ tuần: 200%; Lễ Tết: 300%."
+                },
+                {
+                    question: "Thời hạn báo trước khi đơn phương chấm dứt HĐLĐ không xác định thời hạn?",
+                    options: ["Ít nhất 45 ngày", "Ít nhất 30 ngày", "Ít nhất 3 ngày", "Không cần báo trước"],
+                    correct: 0,
+                    explanation: "Đối với HĐLĐ không xác định thời hạn, người lao động phải báo trước ít nhất 45 ngày."
+                },
+                {
+                    question: "Hành vi nào sau đây KHÔNG thuộc các hành vi bị nghiêm cấm trong Bộ luật Lao động?",
+                    options: ["Đình công tranh chấp quyền lợi hợp pháp", "Phân biệt đối xử", "Quấy rối tình dục", "Cưỡng bức lao động"],
+                    correct: 0,
+                    explanation: "Đình công là quyên của NLĐ. Các hành vi cấm gồm: Phân biệt đối xử, quấy rối, cưỡng bức lao động..."
+                },
+                {
+                    question: "NSDLĐ có quyền can thiệp vào cách chi tiêu lương của NLĐ không?",
+                    options: ["Tuyệt đối KHÔNG", "Được phép nếu NLĐ đồng ý", "Được phép nếu mua hàng của công ty", "Chỉ can thiệp khi trả qua ngân hàng"],
+                    correct: 0,
+                    explanation: "NSDLĐ KHÔNG được hạn chế hoặc can thiệp vào quyền tự quyết chi tiêu lương của NLĐ (Nguyên tắc trả lương)."
+                },
+                // II. Official (NĐ 115)
+                {
+                    question: "Thời gian tập sự đối với viên chức hạng chức danh yêu cầu trình độ Đại học là bao nhiêu?",
+                    options: ["12 tháng", "9 tháng", "6 tháng", "3 tháng"],
+                    correct: 0,
+                    explanation: "Đại học: 12 tháng. Riêng Bác sĩ là 9 tháng."
+                },
+                {
+                    question: "Trong thời gian tập sự, viên chức được hưởng bao nhiêu % lương bậc 1?",
+                    options: ["85%", "80%", "100%", "75%"],
+                    correct: 0,
+                    explanation: "Người tập sự được hưởng 85% mức lương bậc 1 của chức danh nghề nghiệp tuyển dụng."
+                },
+                {
+                    question: "Thời hạn bổ nhiệm viên chức quản lý là bao nhiêu năm?",
+                    options: ["05 năm", "03 năm", "04 năm", "Không xác định thời hạn"],
+                    correct: 0,
+                    explanation: "Thời hạn giữ chức vụ quản lý cho mỗi lần bổ nhiệm là 05 năm."
+                },
+                // III. Medical
+                {
+                    question: "Mức phụ cấp thường trực 24/24 giờ đối với Bệnh viện Hạng I là bao nhiêu?",
+                    options: ["115.000 đ", "90.000 đ", "65.000 đ", "25.000 đ"],
+                    correct: 0,
+                    explanation: "BV Hạng I, Đặc biệt: 115.000 đ; Hạng II: 90.000 đ; Còn lại: 65.000 đ."
+                },
+                {
+                    question: "Sau phiên trực 24 giờ vào ngày thường, viên chức được nghỉ bù bao lâu?",
+                    options: ["Nghỉ 01 ngày", "Nghỉ 02 ngày", "Nghỉ 12 giờ", "Nghỉ 4 giờ"],
+                    correct: 0,
+                    explanation: "Sau trực 24h ngày thường hoặc ngày nghỉ tuần được nghỉ bù 01 ngày."
+                },
+                {
+                    question: "Cơ cấu điểm phân hạng đơn vị y tế (Thang 100đ), nhóm nào chiếm điểm cao nhất?",
+                    options: ["Chuyên môn kỹ thuật (40đ)", "Nhân lực (20đ)", "Cơ sở hạ tầng (15đ)", "Quy mô giường bệnh (15đ)"],
+                    correct: 0,
+                    explanation: "Nhóm I: Mức độ năng lực chuyên môn kỹ thuật chiếm tỷ trọng cao nhất (40 điểm)."
+                },
+                // IV. Admin
+                {
+                    question: "Văn bản nào sau đây là văn bản hành chính cá biệt?",
+                    options: ["Quyết định nâng lương", "Luật Khám chữa bệnh", "Nghị định 115", "Thông tư 03"],
+                    correct: 0,
+                    explanation: "Quyết định (cá biệt) dùng để giải quyết các vụ việc cụ thể đối với đối tượng cụ thể (như nâng lương, bổ nhiệm)."
+                },
+                {
+                    question: "Đâu là thành phần CHÍNH trong thể thức văn bản hành chính?",
+                    options: ["Quốc hiệu và Tiêu ngữ", "Độ mật", "Logo đơn vị", "Địa chỉ email"],
+                    correct: 0,
+                    explanation: "Quốc hiệu/Tiêu ngữ là thành phần chính bắt buộc. Độ mật, địa chỉ, logo... là thành phần bổ sung."
+                },
+                // V. Hospital & Reward
+                {
+                    question: "Giá trị cốt lõi của Bệnh Viện Nhi Đồng Thành Phố là gì?",
+                    options: ["Tận tâm - Năng động - Hợp tác - Công bằng", "Y đức - Chất lượng - Thân thiện", "Hiện đại - Chuyên sâu - Tận tình", "Đoàn kết - Kỷ cương - Trách nhiệm"],
+                    correct: 0,
+                    explanation: "Giá trị cốt lõi: Tận tâm - Năng động - Hợp tác - Công bằng."
+                },
+                {
+                    question: "Hình thức khen thưởng nào thuộc thẩm quyền cấp Nhà nước?",
+                    options: ["Huân chương Lao động", "Giấy khen của Sở Y tế", "Chiến sĩ thi đua cơ sở", "Lao động tiên tiến"],
+                    correct: 0,
+                    explanation: "Huân chương là hình thức khen thưởng cấp Nhà nước do Chủ tịch nước tặng."
+                }
+            ];
+
+            // --- QUIZ STATE ---
+            let currentQuizQuestions = [];
+            let currentQuestionIndex = 0;
+            let score = 0;
+            let canInteract = true;
+
+            // --- QUIZ FUNCTIONS ---
+            function startQuiz() {
+                // Shuffle and pick 10 questions (or all if less than 10)
+                const shuffled = [...QUIZ_SOURCE].sort(() => 0.5 - Math.random());
+                currentQuizQuestions = shuffled.slice(0, 10); // Take random 10
+
+                // Randomize options for each question
+                currentQuizQuestions.forEach(q => {
+                    // Store original correct answer text before shuffling
+                    const correctAnswerText = q.options[q.correct];
+
+                    // Shuffle options
+                    const shuffledOptions = [...q.options].sort(() => 0.5 - Math.random());
+                    q.options = shuffledOptions;
+
+                    // Find new index of correct answer
+                    q.correct = shuffledOptions.indexOf(correctAnswerText);
+                });
+
+                currentQuestionIndex = 0;
+                score = 0;
+                canInteract = true;
+
+                // UI Updates
+                document.getElementById('quiz-start').classList.add('hidden');
+                document.getElementById('quiz-result').classList.add('hidden');
+                document.getElementById('quiz-question-view').classList.remove('hidden');
+
+                renderQuestion();
+            }
+
+            function renderQuestion() {
+                if (currentQuestionIndex >= currentQuizQuestions.length) {
+                    showResult();
+                    return;
+                }
+
+                const q = currentQuizQuestions[currentQuestionIndex];
+
+                // Update Progress & Score
+                document.getElementById('quiz-progress').textContent = `Câu ${currentQuestionIndex + 1}/${currentQuizQuestions.length}`;
+                document.getElementById('quiz-score').textContent = `Điểm: ${score}`;
+
+                // Update Text
+                document.getElementById('quiz-question-text').textContent = q.question;
+
+                // Render Options
+                const optionsContainer = document.getElementById('quiz-options');
+                optionsContainer.innerHTML = '';
+
+                q.options.forEach((opt, idx) => {
+                    const btn = document.createElement('button');
+                    btn.className = `w-full text-left p-4 rounded-lg border border-slate-200 hover:bg-blue-50 hover:border-blue-300 transition-all font-medium text-slate-700 option-btn`;
+                    btn.textContent = opt;
+                    btn.onclick = () => checkAnswer(idx, btn);
+                    optionsContainer.appendChild(btn);
+                });
+
+                // Hide Feedback
+                document.getElementById('quiz-feedback').classList.add('hidden');
+                canInteract = true;
+            }
+
+            function checkAnswer(selectedIndex, btnElement) {
+                if (!canInteract) return;
+                canInteract = false;
+
+                const q = currentQuizQuestions[currentQuestionIndex];
+                const options = document.querySelectorAll('.option-btn');
+                const feedbackArea = document.getElementById('quiz-feedback');
+                const feedbackMsg = document.getElementById('feedback-message');
+                const feedbackExp = document.getElementById('feedback-explanation');
+
+                // Highlight Correct/Incorrect
+                if (selectedIndex === q.correct) {
+                    btnElement.classList.add('bg-green-100', 'border-green-500', 'text-green-800');
+                    feedbackMsg.innerHTML = '<span class="text-green-600">✓ Chính xác!</span>';
+                    score += 10;
+                } else {
+                    btnElement.classList.add('bg-red-100', 'border-red-500', 'text-red-800');
+                    feedbackMsg.innerHTML = '<span class="text-red-600">✗ Sai rồi!</span>';
+                    // Highlight correct one
+                    options[q.correct].classList.add('bg-green-100', 'border-green-500', 'text-green-800');
+                }
+
+                // Disable all buttons
+                options.forEach(b => b.classList.add('pointer-events-none'));
+
+                // Show Feedback
+                feedbackExp.textContent = q.explanation;
+                feedbackArea.classList.remove('hidden');
+
+                // Update Score immediately for feedback
+                document.getElementById('quiz-score').textContent = `Điểm: ${score}`;
+            }
+
+            function nextQuestion() {
+                currentQuestionIndex++;
+                renderQuestion();
+            }
+
+            function showResult() {
+                document.getElementById('quiz-question-view').classList.add('hidden');
+                const resultDiv = document.getElementById('quiz-result');
+                resultDiv.classList.remove('hidden');
+
+                document.getElementById('final-score').textContent = `${score}/${currentQuizQuestions.length * 10}`;
+
+                const msgEl = document.getElementById('result-message');
+                const iconContainer = document.getElementById('result-icon-container');
+                const percentage = (score / (currentQuizQuestions.length * 10)) * 100;
+
+                if (percentage >= 80) {
+                    msgEl.textContent = "Tuyệt vời! Bạn đã nắm rất vững kiến thức.";
+                    iconContainer.innerHTML = '<svg class="w-24 h-24 text-yellow-400 mx-auto mb-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
+                } else if (percentage >= 50) {
+                    msgEl.textContent = "Khá tốt! Hãy ôn lại những phần chưa nhớ nhé.";
+                    iconContainer.innerHTML = '<svg class="w-24 h-24 text-blue-400 mx-auto mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>';
+                } else {
+                    msgEl.textContent = "Cần cố gắng hơn. Hãy xem lại đề cương bạn nhé.";
+                    iconContainer.innerHTML = '<svg class="w-24 h-24 text-slate-400 mx-auto mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 16s-1.5-2-4-2-4 2-4 2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>';
+                }
+            }
+
+            function restartQuiz() {
+                startQuiz();
+            }
+
+            // --- TAB LOGIC ---
+            function switchTab(tabId) {
+                // Update buttons
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    if (btn.id === 'tab-' + tabId) {
+                        btn.classList.add('active', 'bg-blue-700', 'text-white', 'shadow-md', 'transform', 'scale-105');
+                        btn.classList.remove('bg-slate-50', 'text-slate-600', 'hover:bg-blue-50', 'hover:text-blue-700');
+                    } else {
+                        btn.classList.remove('active', 'bg-blue-700', 'text-white', 'shadow-md', 'transform', 'scale-105');
+                        btn.classList.add('bg-slate-50', 'text-slate-600', 'hover:bg-blue-50', 'hover:text-blue-700');
+                    }
+                });
+
+                // Update sections
+                document.querySelectorAll('.section').forEach(section => {
+                    if (section.id === 'section-' + tabId) {
+                        section.classList.remove('hidden', 'block');
+                        void section.offsetWidth; // trigger reflow for animation
+                        section.classList.add('block');
+                    } else {
+                        section.classList.add('hidden');
+                        section.classList.remove('block');
+                    }
+                });
+            }
+
+
+
+        </script>
+</body>
+
+</html>
